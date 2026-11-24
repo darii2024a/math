@@ -21,7 +21,7 @@ function system(kind, lang) {
       "3) a concrete daily routine for the given minutes per day (warm-up, main work, check); " +
       "4) two habits that fix the most frequent error type; " +
       "5) checkpoints: what score to reach and when. " +
-      "Do not repeat the schedule itself, explain how to work with it. Under 250 words. " +
+      "Do not repeat the schedule itself, explain how to work with it. Under 150 words. Be brief: no introduction, no repetition. " +
       language + " " + RULES
     );
   }
@@ -31,7 +31,7 @@ function system(kind, lang) {
     "For each mistake (at most 6): find the exact step where the reasoning breaks; name the error type " +
     "(arithmetic, sign, formula use, or transformation); show the correct solution in short numbered steps; " +
     "say which chapter to review. At the end give one similar task for the student to try, without its answer. " +
-    "If several mistakes share a pattern, name the pattern in two lines. Under 250 words unless asked for more. " +
+    "If several mistakes share a pattern, name the pattern in two lines. Under 150 words unless asked for more. Be brief: no introduction, no repetition. " +
     language + " " + RULES
   );
 }
@@ -94,9 +94,10 @@ exports.handler = async (event) => {
     const payload = JSON.stringify({
       systemInstruction: { parts: [{ text: system(kind, lang) }] },
       contents: msgs,
-      generationConfig: { temperature: 0.4, maxOutputTokens: 2048 },
+      generationConfig: { temperature: 0.4, maxOutputTokens: 1024 },
     });
-    const models = [MODEL, "gemini-flash-lite-latest", MODEL];
+    const models = ["gemini-flash-lite-latest", MODEL, "gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-lite-latest"];
+    const t0 = Date.now();
     let r, data;
     for (let i = 0; i < models.length; i++) {
       r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${models[i]}:generateContent`, {
@@ -105,8 +106,9 @@ exports.handler = async (event) => {
         body: payload,
       });
       data = await r.json().catch(() => ({}));
-      if (r.ok || (r.status !== 503 && r.status !== 500 && r.status !== 429)) break;
-      await new Promise((ok) => setTimeout(ok, 700));
+      if (r.ok || (r.status !== 503 && r.status !== 500 && r.status !== 429 && r.status !== 404)) break;
+      if (Date.now() - t0 > 7000) break; // Netlify обрывает функцию примерно через 10 секунд
+      await new Promise((ok) => setTimeout(ok, 500));
     }
     if (r.status === 429) return J(429, { error: "rate" });
     if (!r.ok) return J(502, { error: (data.error && data.error.message) || "gemini" });
