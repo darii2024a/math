@@ -632,7 +632,7 @@ $('#aGo').onclick=async()=>{
     else r=await sb.auth.signInWithPassword({email:e,password:p});
     if(r.error){er.textContent=errMap(r.error.message);b.disabled=false;return}
     await enter(r.data.session);
-  }catch(x){er.textContent=t('fail')+' ['+((x&&x.message)||x)+']'}
+  }catch(x){er.textContent=t('fail')+' ['+((x&&(x.detail||x.message))||x.code||x)+']'}
   b.disabled=false;
 };
 async function logout(){try{await sb.auth.signOut()}catch(e){}location.reload()}$('#out').onclick=logout;
@@ -976,7 +976,7 @@ $('#sGen').onclick=async()=>{
   const p=`Grade ${U.g} student. Level A = ${U.A.p}%, current level = ${curLevel()}%, goal B = ${B.p}%${dl!=null?', days left = '+dl:', no deadline set'}. Time per day: ${S.mins||30} min.\nChapter scores (last chapter test): ${chs}\nMost frequent error types: ${es||'no data yet'}\nChapters to work on, in order: ${needList().map(cn).join(' -> ')||'none'}\nPlanned next days:\n${wk||'no plan yet'}`;
   $('#sGen').disabled=true;out.textContent='...';
   try{const r=await callAI('strategy',[{role:'user',content:p}],[]);out.textContent=r;S.ai=r;saveS()}
-  catch(e){out.textContent=S.ai||'';er.textContent=e&&e.code==='rate'?t('rate'):t('fail')}
+  catch(e){out.textContent=S.ai||'';er.textContent=e&&e.code==='rate'?t('rate'):t('fail')+(e&&e.detail?' ['+e.detail+']':'')}
   $('#sGen').disabled=false;
 };
 
@@ -1013,8 +1013,10 @@ $('#rdC').onclick=()=>{$('#rd').classList.add('hide');$('#rdB').replaceChildren(
 
 async function callAI(kind,messages,images){
   const ss=(await sb.auth.getSession()).data.session;if(!ss)throw{code:'auth'};
-  const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+ss.access_token},body:JSON.stringify({kind,lang:L,messages,images})});
-  if(r.status===429)throw{code:'rate'};if(!r.ok)throw{code:'fail'};return (await r.json()).text;
+  let r;try{r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+ss.access_token},body:JSON.stringify({kind,lang:L,messages,images})})}catch(e){throw{code:'fail',detail:'network: '+(e&&e.message||e)}}
+  if(r.status===429)throw{code:'rate'};
+  if(!r.ok){let b='';try{b=(await r.text()).slice(0,160)}catch(e){}throw{code:'fail',detail:r.status+' '+b}}
+  return (await r.json()).text;
 }
 function toJpeg(blob){return new Promise((ok,no)=>{const u=URL.createObjectURL(blob),im=new Image();im.onload=()=>{const k=Math.min(1,1280/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',.82).split(',')[1])};im.onerror=no;im.src=u})}
 let att=[];
@@ -1045,7 +1047,7 @@ async function askAI(text){
     const imgs=[];for(const b of ims.slice(0,3))imgs.push({media_type:'image/jpeg',data:await toJpeg(b)});
     const r=await callAI('tutor',msgs.slice(-9),imgs);
     m.textContent=r;msgs.push({role:'assistant',content:r});
-  }catch(e){m.remove();msgs.pop();er.textContent=e&&e.code==='rate'?t('rate'):t('fail')}
+  }catch(e){m.remove();msgs.pop();er.textContent=e&&e.code==='rate'?t('rate'):t('fail')+(e&&e.detail?' ['+e.detail+']':'')}
   busy=false;$('#cS').disabled=false;
 }
 $('#cS').onclick=()=>{const x=$('#cI').value.trim();if(x||att.length){$('#cI').value='';askAI(x||t('askErr'))}};$('#cT').onclick=()=>askAI('cTest');
