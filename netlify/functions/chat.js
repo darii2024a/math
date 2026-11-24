@@ -90,16 +90,24 @@ exports.handler = async (event) => {
   }
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: system(kind, lang) }] },
-        contents: msgs,
-        generationConfig: { temperature: 0.4, maxOutputTokens: 2048 },
-      }),
+    // Gemini иногда перегружен (503/500): пробуем ещё раз и переключаемся на запасные модели
+    const payload = JSON.stringify({
+      systemInstruction: { parts: [{ text: system(kind, lang) }] },
+      contents: msgs,
+      generationConfig: { temperature: 0.4, maxOutputTokens: 2048 },
     });
-    const data = await r.json().catch(() => ({}));
+    const models = [MODEL, "gemini-flash-lite-latest", MODEL];
+    let r, data;
+    for (let i = 0; i < models.length; i++) {
+      r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${models[i]}:generateContent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY },
+        body: payload,
+      });
+      data = await r.json().catch(() => ({}));
+      if (r.ok || (r.status !== 503 && r.status !== 500 && r.status !== 429)) break;
+      await new Promise((ok) => setTimeout(ok, 700));
+    }
     if (r.status === 429) return J(429, { error: "rate" });
     if (!r.ok) return J(502, { error: (data.error && data.error.message) || "gemini" });
     const parts = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
