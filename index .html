@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Math platform</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f5f1;--card:#fff;--tx:#1d1f23;--mu:#6b6f76;--ac:#1f4d3f;--on:#fff;--ac2:#e9efec;--ok:#2f7a4f;--bad:#b3392f;--bd:#dcdad3;--badbg:#fbeae8;--okbg:#e7f3ec}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#121413;--card:#1a1d1b;--tx:#e7e8e4;--mu:#9a9f98;--ac:#6fb59b;--on:#0e1512;--ac2:#1f2b26;--ok:#6cc08f;--bad:#e5877d;--bd:#2c312e;--badbg:#3a1d1a;--okbg:#1b3326}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#121413;--card:#1a1d1b;--tx:#e7e8e4;--mu:#9a9f98;--ac:#6fb59b;--on:#0e1512;--ac2:#1f2b26;--ok:#6cc08f;--bad:#e5877d;--bd:#2c312e;--badbg:#3a1d1a;--okbg:#1b3326}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15.5px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,select,input,textarea{font:inherit;color:var(--tx)}
+button{border:1px solid var(--bd);background:var(--card);padding:8px 14px;border-radius:6px;cursor:pointer}
+button:hover{border-color:var(--ac)}
+button.p{background:var(--ac);border-color:var(--ac);color:var(--on)}
+button.d{color:var(--bad)}
+button.l{border:0;background:none;color:var(--mu);text-decoration:underline;padding:4px 0}
+button:disabled{opacity:.5}
+input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--bd);border-radius:6px;background:var(--card)}
+input[type=checkbox]{width:auto}
+label{display:block;margin:12px 0 4px;font-size:13px;color:var(--mu)}
+a{color:var(--ac)}
+h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:600;margin:0}
+.pt{font-size:26px;margin:4px 0 14px}
+.h{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin:0 0 8px}
+.mu{color:var(--mu);font-size:14px}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:16px;margin:0 0 12px}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
+.hide{display:none!important}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:6px 0}
+.tag{font-size:12px;color:var(--mu);border:1px solid var(--bd);padding:1px 6px;border-radius:4px;margin-left:8px;font-weight:400}
+.logo{font-family:Georgia,serif;font-weight:700;font-size:20px;color:var(--ac)}
+#auth{max-width:440px;margin:0 auto;padding:20px 16px}
+.seg{display:flex;margin:12px 0;border:1px solid var(--bd);border-radius:6px;overflow:hidden}
+.seg button{flex:1;border:0;border-radius:0}.seg button.on{background:var(--ac);color:var(--on)}
+.lang{display:flex;gap:14px;justify-content:flex-end;margin-bottom:8px}.lang button{border:0;background:none;padding:2px;color:var(--mu)}.lang button.on{color:var(--ac);font-weight:600;border-bottom:2px solid var(--ac);border-radius:0}
+.sb{position:fixed;top:0;bottom:0;left:0;width:240px;background:var(--card);border-right:1px solid var(--bd);padding:calc(16px + env(safe-area-inset-top,0px)) 0 14px;transform:translateX(-100%);transition:transform .2s;z-index:20;overflow-y:auto}
+.sb.o{transform:none}
+.sb .logo{display:block;padding:0 18px 14px}
+.sb .nv{display:block;width:100%;text-align:left;border:0;border-left:3px solid transparent;border-radius:0;background:none;padding:10px 18px}
+.sb .nv.on{border-left-color:var(--ac);color:var(--ac);font-weight:600;background:var(--ac2)}
+.ov{position:fixed;inset:0;background:#0006;z-index:10}
+.top{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--bd);background:var(--card)}
+main{padding:18px 14px;max-width:860px;margin:0 auto}
+@media(min-width:900px){.sb{transform:none}.top button{display:none}.ov{display:none}#app{padding-left:240px}}
+.q{font-family:Georgia,serif;font-size:19px;line-height:1.45}
+.opt{display:block;width:100%;text-align:left;margin:6px 0}
+.opt.sel{border-color:var(--ac);background:var(--ac2)}.opt.ok{border-color:var(--ok);background:var(--ac2)}.opt.no{border-color:var(--bad)}
+.stat{flex:1;min-width:110px}.stat .mu{font-size:12px;text-transform:uppercase;letter-spacing:.05em}.stat b{display:block;font-family:Georgia,serif;font-size:28px;font-weight:600;color:var(--ac)}
+#log{height:50vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px;border:1px solid var(--bd);border-radius:6px;padding:10px;margin-bottom:8px}
+.m{padding:8px 12px;border-radius:6px;max-width:88%;white-space:pre-wrap;word-wrap:break-word}
+.m.u{align-self:flex-end;background:var(--ac);color:var(--on)}.m.a{align-self:flex-start;background:var(--ac2)}
+.it{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--bd)}
+.it:first-of-type{border-top:0}
+.sc{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{padding:6px 8px;border-top:1px solid var(--bd);text-align:left;white-space:nowrap}
+details{border:1px solid var(--bd);border-radius:8px;background:var(--card);margin:0 0 10px}
+summary{padding:12px 16px;cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:8px}
+summary::-webkit-details-marker{display:none}
+details>div{padding:0 16px 14px}
+.bar{position:relative;height:8px;background:var(--ac2);border-radius:4px;margin:26px 0 30px}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--ac);border-radius:4px}
+.bar span{position:absolute;top:-20px;transform:translateX(-50%);font-size:12px;color:var(--mu)}
+.bar span:after{content:"";position:absolute;left:50%;top:16px;height:12px;border-left:1px solid var(--mu)}
+.nt{border-left:3px solid var(--ac);padding:4px 0 4px 12px;font-family:Georgia,serif;font-size:18px}
+#rd{position:fixed;inset:0;z-index:30;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.rt{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--bd);background:var(--card)}
+#rdB{flex:1;overflow:auto;padding:10px;text-align:center}
+#rdB canvas{max-width:100%;border:1px solid var(--bd);background:#fff}
+/* тест нәтижесі: қателер қызылмен */
+.c.rbad{border:2px solid var(--bad)}.c.rok{border-color:var(--ok)}
+.ro{display:flex;align-items:center;gap:8px;padding:9px 12px;margin:6px 0;border:1px solid var(--bd);border-radius:6px;background:var(--card)}
+.ro .rm{flex:0 0 18px;font-weight:700;text-align:center}
+.ro .rl{margin-left:auto;font-size:12px;white-space:nowrap}
+.ro.ok{border:2px solid var(--ok);background:var(--okbg);color:var(--ok);font-weight:600}
+.ro.no{border:2px solid var(--bad);background:var(--badbg);color:var(--bad);font-weight:700}
+.bn{color:var(--bad);font-weight:600;font-size:14px;margin:8px 0 0}
+.chip{border-color:var(--bad);color:var(--bad);background:var(--badbg);padding:3px 10px;margin:2px 4px 2px 0;font-weight:600}
+/* күн жоспары */
+.calnav{display:flex;align-items:center;justify-content:space-between;margin:10px 0 6px}.calnav button{width:40px;padding:6px 0}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.cw{text-align:center;font-size:12px;color:var(--mu);padding:2px 0}
+.cd{min-height:46px;padding:4px 2px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font:inherit;cursor:pointer}
+.cd.emp{border:0;background:none;cursor:default}.cd .cn{font-weight:600;font-size:14px}.cd .cc{font-size:10px;color:var(--mu)}
+.cd.has{background:var(--ac2)}.cd.all{background:var(--okbg);border-color:var(--ok)}.cd.miss{background:var(--badbg);border-color:var(--bad)}
+.cd.td{border:2px solid var(--ac)}.cd.sel{outline:2px solid var(--ac);outline-offset:1px}
+.calday{margin-top:12px;padding-top:6px;border-top:1px solid var(--bd)}
+.pi{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--bd)}
+.pi>div:first-child{flex:1;min-width:0}
+.pa{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.pi.dn b{text-decoration:line-through;color:var(--mu)}
+details>summary{flex-wrap:wrap}
+details>summary .mu{font-weight:400;font-size:13px}
+</style>
+</head>
+<body>
+<div id="splash" class="c" style="max-width:440px;margin:40px auto;text-align:center"><span class="mu" data-t="loading"></span></div>
+<div id="auth" class="hide">
+  <div class="lang"><button data-l="kk">Қазақша</button><button data-l="ru">Русский</button></div>
+  <div class="c">
+    <div class="logo">Math platform</div>
+    <p class="mu" data-t="tag"></p>
+    <div class="seg"><button id="tReg"></button><button id="tLog"></button></div>
+    <div id="fReg"><label data-t="name"></label><input id="rN" autocomplete="name"><label data-t="grade"></label><select id="rG"></select></div>
+    <label>Email (Gmail)</label><input id="rE" type="email" autocomplete="email" placeholder="name@gmail.com">
+    <label data-t="pass"></label><input id="rP" type="password" autocomplete="current-password">
+    <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="sp"><span data-t="show"></span></label>
+    <p class="err" id="aErr"></p>
+    <button class="p" id="aGo" style="width:100%"></button>
+  </div>
+</div>
+
+<div id="app" class="hide">
+  <div class="top"><button id="menu">Меню</button><span class="logo">Math platform</span></div>
+  <aside class="sb" id="sb"></aside><div class="ov hide" id="ov"></div>
+  <main>
+    <section id="home">
+      <h2 class="pt" id="hi"></h2>
+      <div class="c" id="banner"></div>
+      <div class="row" id="stats" style="margin-bottom:12px"></div>
+      <div class="c hide" id="hPlan"></div>
+      <div class="c"><div class="h" data-t="motTitle"></div><p class="nt" id="mot"></p><button class="l" id="nm" data-t="nextNote"></button></div>
+      <div class="c"><div class="h" data-t="funTitle"></div><p id="fact"></p><button class="l" id="nf" data-t="nextFact"></button></div>
+      <div class="c" id="last"></div>
+    </section>
+
+    <section id="place" class="hide">
+      <h2 class="pt" data-t="placeT"></h2>
+      <div class="c"><p data-t="placeTxt"></p><button class="p" id="plGo" data-t="start"></button> <button class="l" id="plSkip" data-t="later"></button></div>
+    </section>
+
+    <section id="qz" class="hide">
+      <h2 class="pt" id="qTitle"></h2><div id="qBox"></div>
+    </section>
+
+    <section id="test" class="hide">
+      <h2 class="pt" data-t="n_test"></h2>
+      <div class="c">
+        <div class="row"><div><label data-t="section"></label><select id="tS"></select></div><div><label data-t="chapter"></label><select id="tC"></select></div></div>
+        <p class="mu" data-t="testHint"></p>
+        <button class="p" id="tGo" data-t="start"></button> <button id="tPl" data-t="retake"></button>
+      </div>
+    </section>
+
+    <section id="video" class="hide">
+      <h2 class="pt" data-t="n_video"></h2>
+      <div class="c"><label style="margin-top:0" data-t="grade"></label><select id="vG"></select><p class="mu" id="vNote"></p></div>
+      <div id="vBox"></div>
+    </section>
+
+    <section id="strat" class="hide">
+      <h2 class="pt" data-t="n_strat"></h2>
+      <div class="c" id="sAB"></div>
+      <div class="c" id="sDay"></div>
+      <div class="c" id="sCal"></div>
+      <div class="c" id="sPlan"></div>
+      <div class="c"><div class="h" data-t="myStrat"></div><p class="mu" data-t="stratSub"></p>
+        <div id="sAI" class="mu" style="white-space:pre-wrap;color:var(--tx);margin-bottom:8px"></div>
+        <button id="sGen" data-t="genStrat"></button><p class="err" id="sErr"></p>
+        <label data-t="myNotes"></label><textarea id="sNote" rows="4"></textarea></div>
+    </section>
+
+    <section id="books" class="hide">
+      <h2 class="pt" data-t="n_books"></h2>
+      <div class="c"><div class="row"><div><label style="margin-top:0" data-t="grade"></label><select id="bG"></select></div><div><label style="margin-top:0" data-t="lang"></label><select id="bL"></select></div></div></div>
+      <div id="bBox"></div>
+    </section>
+
+    <section id="chat" class="hide">
+      <h2 class="pt" data-t="n_chat"></h2>
+      <div class="c"><p class="mu" data-t="chatSub"></p><div id="log"></div>
+        <button id="cT" data-t="cTest"></button>
+        <div class="row" style="margin-top:8px"><button id="aCam" data-t="aCam"></button><button id="aGal" data-t="aGal"></button><button id="aFile" data-t="aFile"></button></div><div id="aList" class="mu" style="margin-top:6px"></div>
+        <input id="iCam" type="file" accept="image/*" capture="environment" class="hide"><input id="iGal" type="file" accept="image/*" multiple class="hide"><input id="iFile" type="file" accept=".pdf,.txt,.md,.csv,image/*" class="hide">
+        <textarea id="cI" rows="3" style="margin-top:8px"></textarea>
+        <button class="p" id="cS" style="margin-top:8px;width:100%" data-t="send"></button><p class="err" id="cE"></p></div>
+    </section>
+
+    <section id="acc" class="hide">
+      <h2 class="pt" data-t="n_acc"></h2>
+      <div class="c"><div class="h" data-t="accTitle"></div><div id="accInfo"></div></div>
+      <div class="c"><div class="h" data-t="lang"></div><div class="seg" id="accLang"></div></div>
+      <div class="c"><div class="h" data-t="chPass"></div>
+        <label data-t="curPass"></label><input type="password" id="pO"><label data-t="newPass"></label><input type="password" id="pN">
+        <p class="err" id="pE"></p><button class="p" id="pGo" data-t="save"></button></div>
+      <div class="c"><div class="h" data-t="data"></div><p class="mu" data-t="dataSub"></p>
+        <div class="row"><button id="exp" data-t="export"></button><button id="out" data-t="logout"></button><button class="d" id="del" data-t="delAcc"></button></div></div>
+    </section>
+
+    <section id="admin" class="hide">
+      <h2 class="pt" data-t="n_admin"></h2>
+      <div class="c"><p class="mu" data-t="admSub"></p><p class="err" id="admMsg"></p></div>
+      <div class="c"><div class="h" data-t="addVideo"></div>
+        <input id="avT" data-p="ph_title"><input id="avU" placeholder="https://youtu.be/..." style="margin-top:6px">
+        <div class="row" style="margin-top:6px"><select id="avL"></select><select id="avG"></select><select id="avC"></select></div>
+        <textarea id="avK" rows="2" data-p="ph_task" style="margin-top:6px"></textarea><input id="avKU" data-p="ph_taskurl" style="margin-top:6px">
+        <button class="p" id="avAdd" style="margin-top:8px" data-t="add"></button><div id="avList"></div></div>
+      <div class="c"><div class="h" data-t="addBook"></div>
+        <input id="abT" data-p="ph_title"><input id="abF" type="file" accept="application/pdf" style="margin-top:6px"><p class="mu" data-t="abHint" style="margin:6px 0"></p><input id="abU" placeholder="https://..." style="margin-top:2px">
+        <div class="row" style="margin-top:6px"><select id="abL"></select><select id="abG"></select><select id="abS"></select></div>
+        <button class="p" id="abAdd" style="margin-top:8px" data-t="add"></button><div id="abList"></div></div>
+      <div class="c"><div class="h" data-t="addNote"></div>
+        <textarea id="anT" rows="2" data-p="ph_note"></textarea><select id="anL" style="margin-top:6px"></select>
+        <button class="p" id="anAdd" style="margin-top:8px" data-t="add"></button><div id="anList"></div></div>
+      <div class="c"><div class="h" data-t="users"></div><p class="mu" data-t="usersNote"></p>
+        <div class="row" id="uStats"></div><input id="uQ" style="margin:8px 0" data-p="search"><div class="sc" id="uTab"></div>
+        <button id="csv" style="margin-top:8px">CSV</button></div>
+    </section>
+  </main>
+</div>
+
+<div id="rd" class="hide"><div class="rt"><b id="rdT"></b><span class="row" style="flex-wrap:nowrap;align-items:center"><button id="rdP">&lt;</button><span id="rdN" class="mu" style="flex:0 0 auto;min-width:60px;text-align:center"></span><button id="rdX2">&gt;</button><button id="rdC"></button></span></div><div id="rdB"></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.106.1/dist/umd/supabase.js"></script>
+<script data-cfg>
+window.CFG = {
+  SUPABASE_URL: 'https://imhucrpunnsomfzwhhdn.supabase.co',
+  SUPABASE_KEY: 'sb_publishable_UTZJsizhKofQ2Dm_SiqVqQ_4GWylaIF'
+};
+</script>
+<script data-bank>
+/* Math platform: параметрлі есептер банкі (ЖИ-сіз, лимитсіз).
+   Әр есеп кездейсоқ сандармен құралады, жауабы кодпен есептеледі.
+   Қате жауаптар типтік қателерден жасалған: ar (арифметика), sign (таңба), form (формула), trans (түрлендіру). */
+(function(){
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pk=a=>a[ri(0,a.length-1)];
+const gcd=(a,b)=>b?gcd(b,a%b):Math.abs(a);
+const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=ri(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+const num=n=>String(Math.round(n*1e6)/1e6).replace('.',',');
+const f=v=>typeof v==='number'?num(v):String(v);
+const fr=(n,d)=>{if(d<0){n=-n;d=-d}const g=gcd(n,d)||1;n/=g;d/=g;return d===1?String(n):n+'/'+d};
+const sg=n=>n<0?'- '+(-n):'+ '+n;
+const mn=n=>n<0?'−'+(-n):String(n);
+const pt=(x,y)=>'('+x+'; '+y+')';
+const fact=n=>n<2?1:n*fact(n-1);
+const nz=(a,b)=>{let x=0;while(!x)x=ri(a,b);return x};
+const TR=[[3,4,5],[5,12,13],[6,8,10],[8,15,17],[9,12,15]];
+
+function mk(t,kk,ru,a,w){
+  a=f(a);const seen=new Set([a]),d=[];
+  for(const [v,e] of w){const s=f(v);if(!seen.has(s)){seen.add(s);d.push({v:s,e})}}
+  const n0=parseFloat(a.replace(',','.'));let k=1;
+  const cm=a.match(/^\((-?\d+); (-?\d+)\)$/),fm=a.match(/^(-?\d+)\/(\d+)$/);
+  while(d.length<3&&k<30){let s=null;
+    if(cm){s=k%2?pt(+cm[1]+Math.ceil(k/2),cm[2]):pt(cm[1],+cm[2]+Math.ceil(k/2))}
+    else if(fm){s=k%2?fr(+fm[1]+Math.ceil(k/2),+fm[2]):fr(+fm[1],+fm[2]+Math.ceil(k/2))}
+    else if(!isNaN(n0)&&/^-?[\d,]+$/.test(a))s=num(n0+(k%2?1:-1)*Math.ceil(k/2));
+    if(s&&!seen.has(s)){seen.add(s);d.push({v:s,e:'ar'})}k++}
+  const o=sh([{v:a,c:1},...d.slice(0,3)]);
+  return {t,q:{kk,ru},o:o.map(x=>({v:x.v,e:x.c?null:x.e})),a:o.findIndex(x=>x.c)};
+}
+
+const G={
+bol:[
+{g:5,f(){const g=pk([2,3,4,5,6]),p=pk([2,3,5,7]);let q=pk([2,3,4,5,7]);while(q===p||gcd(p,q)!==1)q=pk([2,3,4,5,7]);const a=g*p,b=g*q;
+ return ri(0,1)?mk('bol',`${a} және ${b} сандарының ЕҮОБ-ын тап.`,`Найди НОД чисел ${a} и ${b}.`,g,[[g*p*q,'form'],[a-b>0?a-b:b-a,'form'],[p*q,'form']])
+  :mk('bol',`${a} және ${b} сандарының ЕКОЕ-н тап.`,`Найди НОК чисел ${a} и ${b}.`,g*p*q,[[g,'form'],[a*b,'form'],[a+b,'form']])}},
+{g:5,f(){const d=ri(5,12),a=ri(1,d-2),b=ri(1,d-2),sm=a+b;
+ return mk('bol',`Есепте: ${a}/${d} + ${b}/${d}. Жауабын қысқартылған бөлшекпен жаз.`,`Вычисли: ${a}/${d} + ${b}/${d}. Ответ запиши несократимой дробью.`,fr(sm,d),[[fr(sm,2*d),'form'],[fr(a*b,d),'form'],[fr(sm,d+d-1),'ar'],[fr(Math.abs(a-b),d),'sign']])}},
+{g:5,f(){let k=ri(1,6),b=ri(3,9),a;do{a=ri(1,b-1)}while(gcd(a,b)!==1);
+ return mk('bol',`${k} ${a}/${b} аралас санын бұрыс бөлшекке айналдыр.`,`Преврати смешанное число ${k} ${a}/${b} в неправильную дробь.`,(k*b+a)+'/'+b,[[(k+a)+'/'+b,'form'],[(a*b+k)+'/'+b,'form'],[(k*a)+'/'+b,'form'],[(k*b+a)+'/'+(b+1),'ar']])}},
+{g:5,f(){const x=ri(11,99)/10,y=ri(11,99)/10,sm=Math.round((x+y)*10)/10;
+ return mk('bol',`Есепте: ${num(x)} + ${num(y)}.`,`Вычисли: ${num(x)} + ${num(y)}.`,sm,[[Math.round((x+y)*100)/1000,'ar'],[sm*10,'ar'],[Math.round((x*y)*100)/100,'form']])}},
+{g:5,f(){const a=ri(1,9),b=ri(1,9),c=ri(1,9),d=ri(1,9),x=a+b/10+c/100+d/1000,r=Math.round(x*10)/10;
+ return mk('bol',`${num(x)} санын ондықтарға дейін дөңгелекте.`,`Округли число ${num(x)} до десятых.`,r,[[a+b/10,'trans'],[Math.round(x*100)/100,'ar'],[Math.round(x),'ar'],[a+(b+1)/10,'ar']])}},
+{g:5,f(){const p=pk([10,20,25,50,75]),N=ri(1,12)*20,r=N*p/100;
+ return mk('bol',`${N} санының ${p}%-ы неге тең?`,`Чему равны ${p}% от числа ${N}?`,r,[[N*p,'form'],[N*p/10,'trans'],[N-r,'form'],[N/p,'form']])}},
+{g:6,f(){const a=ri(2,6),k=ri(2,6),b=ri(2,6),c=a*k,x=b*k;
+ return mk('bol',`Пропорцияны шеш: ${a} : ${b} = ${c} : x.`,`Реши пропорцию: ${a} : ${b} = ${c} : x.`,x,[[a*c/b,'form'],[c+b-a,'ar'],[b*c,'form'],[c-a+b,'sign']])}},
+{g:6,f(){const k=ri(2,6),p=ri(2,9)*5,m=k+ri(1,5);
+ return mk('bol',`${k} кг алма ${k*p} теңге тұрады (тура пропорционал). ${m} кг алма қанша тұрады?`,`${k} кг яблок стоят ${k*p} тенге (прямая пропорциональность). Сколько стоят ${m} кг?`,m*p,[[k*p/m,'form'],[k*p+m-k,'ar'],[k*p*m,'form'],[(k*p)/m*k,'form']])}},
+{g:6,f(){const n=pk([2,3,4,6]),d=pk([6,8,12]),m=pk([2,3,4,6].filter(v=>v!==n));
+ const tot=n*d; if(tot%m)return G.bol.find(x=>x.g===6).f();
+ return mk('bol',`${n} жұмысшы жұмысты ${d} күнде орындайды. ${m} жұмысшы (кері пропорционал) неше күнде орындайды?`,`${n} рабочих выполняют работу за ${d} дней. За сколько дней её выполнят ${m} рабочих (обратная пропорциональность)?`,tot/m,[[d*m/n,'form'],[tot*m,'form'],[d+m-n,'ar'],[tot/m+1,'ar']])}},
+{g:6,f(){const S=pk([2,5,10,20,50]),d=ri(2,9);
+ return mk('bol',`Картаның масштабы 1 см = ${S} км. Картада арақашықтық ${d} см. Нақты арақашықтық қанша км?`,`Масштаб карты: 1 см = ${S} км. На карте расстояние ${d} см. Сколько км на местности?`,d*S,[[d/S,'form'],[d+S,'form'],[d*S*10,'ar']])}},
+{g:7,f(){let b=pk([2,3,4,5,6,8]),d=pk([2,3,4,5,6,8]);while(d===b)d=pk([2,3,4,5,6,8]);const a=ri(1,b-1),c=ri(1,d-1),n=a*d+c*b,m=b*d;
+ return mk('bol',`Есепте: ${a}/${b} + ${c}/${d}. Жауабын қысқартылған бөлшекпен жаз.`,`Вычисли: ${a}/${b} + ${c}/${d}. Ответ запиши несократимой дробью.`,fr(n,m),[[fr(a+c,b+d),'form'],[fr(a*c,b*d),'form'],[fr(a*d-c*b,m),'sign'],[n+'/'+m,'trans']])}},
+{g:7,f(){let b,d,a,c;do{b=ri(2,7);d=ri(2,7);a=ri(1,b+2);c=ri(1,d+2)}while(a===b||c===d||a%b===0||c%d===0);
+ return mk('bol',`Есепте: ${a}/${b} : ${c}/${d}. Жауабын қысқартылған бөлшекпен жаз.`,`Вычисли: ${a}/${b} : ${c}/${d}. Ответ запиши несократимой дробью.`,fr(a*d,b*c),[[fr(a*c,b*d),'form'],[fr(b*c,a*d),'form'],[fr(a*d,b+c),'form'],[fr(a+d,b+c),'form']])}},
+{g:7,f(){const p=pk([10,15,20,25,30,40,50,60,75]),N=ri(1,12)*20,r=N*p/100;
+ return mk('bol',`${N} санының ${p}%-ы неге тең?`,`Чему равны ${p}% от числа ${N}?`,r,[[N*p,'form'],[N*p/10,'trans'],[N-r,'form'],[N/p,'form']])}}
+],
+ten:[
+{g:5,f(){const a=ri(2,9),b=ri(2,9),c=ri(2,9),d=ri(1,9),v=pk([0,1]);
+ if(v)return mk('ten',`Есепте: ${a} + ${b} · ${c} − ${d}`,`Вычисли: ${a} + ${b} · ${c} − ${d}`,a+b*c-d,[[(a+b)*c-d,'form'],[a+b*(c-d),'form'],[a+b*c+d,'sign'],[a*b*c-d,'form']]);
+ return mk('ten',`Есепте: (${a} + ${b}) · ${c} + ${d}`,`Вычисли: (${a} + ${b}) · ${c} + ${d}`,(a+b)*c+d,[[a+b*c+d,'form'],[(a+b)*(c+d),'form'],[a+b+c*d,'form'],[(a+b)*c-d,'sign']])}},
+{g:5,f(){const x=ri(3,15),a=ri(2,9),v=ri(0,2);
+ if(v===0)return mk('ten',`Теңдеуді шеш: x + ${a} = ${x+a}`,`Реши уравнение: x + ${a} = ${x+a}`,x,[[x+2*a,'sign'],[x+a,'form'],[a*x,'form']]);
+ if(v===1)return mk('ten',`Теңдеуді шеш: x − ${a} = ${x-a<0?x:x-a}`,`Реши уравнение: x − ${a} = ${x-a<0?x:x-a}`,(x-a<0?x:x-a)+a,[[(x-a<0?x:x-a)-a,'sign'],[a,'form'],[(x-a<0?x:x-a)*a,'form']]);
+ return mk('ten',`Теңдеуді шеш: ${a}x = ${a*x}`,`Реши уравнение: ${a}x = ${a*x}`,x,[[a*x*a,'form'],[a*x-a,'trans'],[a*x+a,'trans']])}},
+{g:5,f(){const a=ri(2,9),b=ri(2,9),c=ri(1,a+b-1);
+ return mk('ten',`${a}n + ${b}n − ${c}n өрнегін ықшамда.`,`Упрости выражение ${a}n + ${b}n − ${c}n.`,(a+b-c)+'n',[[(a+b+c)+'n','sign'],[(a+b-c)+'','form'],[(a*b-c)+'n','form'],[(a+b-c)+'n²','form']])}},
+{g:5,f(){const a=ri(2,9),k=ri(2,6),b=ri(1,9);
+ return mk('ten',`a = ${a} болғанда ${k}a + ${b} өрнегінің мәнін тап.`,`Найди значение выражения ${k}a + ${b} при a = ${a}.`,k*a+b,[[k+a+b,'form'],[Number(''+k+a)+b,'trans'],[k*(a+b),'form'],[k*a-b,'sign']])}},
+{g:6,f(){const a=nz(-12,12),b=nz(-12,12);
+ return mk('ten',`Есепте: ${a} + (${b})`,`Вычисли: ${a} + (${b})`,a+b,[[a-b,'sign'],[-(a+b),'sign'],[Math.abs(a)+Math.abs(b),'sign'],[b-a,'sign']])}},
+{g:6,f(){const a=nz(-12,12),b=nz(-12,12);
+ return mk('ten',`Есепте: |${a}| − |${b}|`,`Вычисли: |${a}| − |${b}|`,Math.abs(a)-Math.abs(b),[[a-b,'sign'],[Math.abs(a-b),'trans'],[Math.abs(a)+Math.abs(b),'sign'],[-(Math.abs(a)-Math.abs(b)),'sign']])}},
+{g:6,f(){const a=ri(8,20),b=ri(2,9),c=ri(2,9);
+ return mk('ten',`Жақшаны аш және есепте: ${a} − (${b} − ${b+c})`,`Раскрой скобки и вычисли: ${a} − (${b} − ${b+c})`,a+c,[[a-c,'sign'],[a-b-b-c,'sign'],[a-b+b+c-2*c,'sign'],[a+b+c,'sign']])}},
+{g:6,f(){const a=pk([-5,-4,-3,-2,2,3,4,5]),b=ri(2,9),k=ri(2,6),c=ri(1,5);let a2=a,r=null;
+ const p=k+a2||1, e=`${k}x ${sg(b)} ${a2<0?'−':'+'} ${Math.abs(a2)}x ${sg(c)}`,A=k+a2,B=b+c;
+ const t1=A===0?'':(A===1?'x':A===-1?'−x':A+'x');
+ if(A===0||A===1||A===-1)return G.ten.find(x=>x.g===6).f();
+ return mk('ten',`Ұқсас қосылғыштарды біріктір: ${k}x ${sg(b)} ${a2<0?'− '+(-a2):'+ '+a2}x ${sg(c)}`,`Приведи подобные слагаемые: ${k}x ${sg(b)} ${a2<0?'− '+(-a2):'+ '+a2}x ${sg(c)}`,`${mn(A)}x ${B<0?'− '+(-B):'+ '+B}`,[[`${mn(A)}x ${B<0?'+ '+(-B):'− '+B}`,'sign'],[`${mn(k-a2)}x ${B<0?'− '+(-B):'+ '+B}`,'sign'],[`${mn(A+B)}x`,'trans'],[`${mn(A)}x² ${B<0?'− '+(-B):'+ '+B}`,'form']])}},
+{g:6,f(){const r=nz(-9,9),a=pk([2,3,4,5,-2,-3,-4]),b=nz(-9,9),c=a*r+b;
+ return mk('ten',`Теңдеуді шеш: ${a}x ${sg(b)} = ${c}`,`Реши уравнение: ${a}x ${sg(b)} = ${c}`,r,[[(c+b)/a,'sign'],[c-b,'form'],[-r,'sign'],[(c-b)*a,'form']])}},
+{g:6,f(){const a=ri(2,9),b=ri(2,12),op=pk(['>','<']),e=`x − ${a} ${op} ${b}`;
+ return mk('ten',`Теңсіздікті шеш: ${e}`,`Реши неравенство: ${e}`,`x ${op} ${a+b}`,[[`x ${op} ${b-a}`,'sign'],[`x ${op==='>'?'<':'>'} ${a+b}`,'sign'],[`x ${op==='>'?'<':'>'} ${b-a}`,'sign']])}},
+{g:7,f(){const r=nz(-9,9),a=ri(2,9),b=nz(-12,12),c=a*r+b,e=`${a}x ${sg(b)} = ${c}`;
+ return mk('ten',`Теңдеуді шеш: ${e}`,`Реши уравнение: ${e}`,r,[[(c+b)/a,'sign'],[c-b,'form'],[-r,'sign'],[(c-b)*a,'form']])}},
+{g:7,f(){const r=nz(-8,8),cc=ri(1,6),a=cc+ri(1,5);let b,d;do{b=ri(-10,10);d=b+(a-cc)*r}while(!b||!d);const e=`${a}x ${sg(b)} = ${cc}x ${sg(d)}`;
+ return mk('ten',`Теңдеуді шеш: ${e}`,`Реши уравнение: ${e}`,r,[[(d-b)/(a+cc),'sign'],[-r,'sign'],[(d+b)/(a-cc),'sign'],[(d-b)/a,'form']])}},
+{g:7,f(){const a=pk([-6,-5,-4,-3,-2,2,3,4,5,6]),r=nz(-6,6),b=nz(-9,9),c=a*r+b,op=pk(['>','<']),fl=o=>o==='>'?'<':'>',o2=a>0?op:fl(op),e=`${a}x ${sg(b)} ${op} ${c}`;
+ return mk('ten',`Теңсіздікті шеш: ${e}`,`Реши неравенство: ${e}`,`x ${o2} ${r}`,[[`x ${fl(o2)} ${r}`,'sign'],[`x ${o2} ${-r}`,'sign'],[`x ${fl(o2)} ${-r}`,'sign']])}},
+{g:8,f(){let r1,r2;do{r1=ri(-6,6);r2=ri(-6,6)}while(!r1||!r2||r1===r2||r1+r2===0);const b=-(r1+r2),c=r1*r2,s=(x,y)=>[x,y].sort((p,q)=>p-q).join('; '),e=`x² ${sg(b)}x ${sg(c)} = 0`;
+ return mk('ten',`${e} теңдеуінің түбірлерін тап.`,`Найди корни уравнения ${e}.`,s(r1,r2),[[s(-r1,-r2),'sign'],[s(r1,-r2),'sign'],[s(r1+1,r2+1),'ar'],[s(-r1,r2),'sign']])}}
+],
+san:[
+{g:5,f(){const a=ri(1,9),d=ri(2,6),n=ri(5,7),sq=[0,1,2,3].map(i=>a+i*d);
+ return mk('san',`Сандар тізбегі: ${sq.join(', ')}, ... Келесі санды тап.`,`Числовая последовательность: ${sq.join(', ')}, ... Найди следующее число.`,a+4*d,[[a+3*d+1,'ar'],[a+5*d,'ar'],[(a+3*d)*2,'form'],[a+3*d+(d-1),'ar']])}},
+{g:5,f(){const a=ri(1,9),b=a+ri(8,30);
+ return mk('san',`${a} мен ${b} аралығындағы (${a} мен ${b}-ді қоса) барлық натурал сандар саны қанша?`,`Сколько натуральных чисел от ${a} до ${b} включительно?`,b-a+1,[[b-a,'ar'],[b-a-1,'ar'],[b-a+2,'ar']])}},
+{g:6,f(){const m=ri(1,9);let ar=[m,m,m];while(ar.length<7){const v=ri(1,9);if(v!==m&&ar.filter(x=>x===v).length<2)ar.push(v)}ar=sh(ar);const so=ar.slice().sort((x,y)=>x-y);
+ return mk('san',`Деректер: ${ar.join(', ')}. Модасын тап.`,`Данные: ${ar.join(', ')}. Найди моду.`,m,[[so[3],'form'],[Math.round(ar.reduce((x,y)=>x+y,0)/ar.length),'form'],[so[so.length-1]-so[0],'form'],[m+1,'ar']])}},
+{g:7,f(){const a1=ri(-5,10),d=ri(2,7),n=ri(6,15),an=a1+(n-1)*d;
+ return mk('san',`Арифметикалық прогрессияда бірінші мүше ${a1}, айырымы ${d}. ${n}-мүшесін тап.`,`В арифметической прогрессии первый член ${a1}, разность ${d}. Найди ${n}-й член.`,an,[[a1+n*d,'form'],[a1+(n-2)*d,'form'],[a1-(n-1)*d,'sign'],[a1+(n-1)+d,'trans']])}},
+{g:8,f(){const a1=ri(1,9),d=ri(2,6),n=ri(5,12),an=a1+(n-1)*d,S=n*(a1+an)/2;
+ return mk('san',`Арифметикалық прогрессияда бірінші мүше ${a1}, айырымы ${d}. Алғашқы ${n} мүшесінің қосындысын тап.`,`В арифметической прогрессии первый член ${a1}, разность ${d}. Найди сумму первых ${n} членов.`,S,[[n*(a1+an),'form'],[(a1+an)/2,'form'],[n*an,'form'],[S+d,'ar']])}},
+{g:9,f(){const b1=ri(1,4),q=ri(2,3),n=ri(3,6),bn=b1*Math.pow(q,n-1);
+ return mk('san',`Геометриялық прогрессияда бірінші мүше ${b1}, еселігі ${q}. ${n}-мүшесін тап.`,`В геометрической прогрессии первый член ${b1}, знаменатель ${q}. Найди ${n}-й член.`,bn,[[b1*Math.pow(q,n),'form'],[b1*q*(n-1),'form'],[b1*q*n,'form'],[b1+(n-1)*q,'form']])}}
+],
+komb:[
+{g:5,f(){const U=[1,2,3,4,5,6,7,8,9,10,11,12],A=sh(U).slice(0,ri(4,7)),B=sh(U).slice(0,ri(4,7)),I=A.filter(x=>B.includes(x)),Un=new Set([...A,...B]);
+ const sa=a=>'{'+a.slice().sort((x,y)=>x-y).join('; ')+'}';
+ return ri(0,1)?mk('komb',`A = ${sa(A)}, B = ${sa(B)}. A ∩ B жиынында неше элемент бар?`,`A = ${sa(A)}, B = ${sa(B)}. Сколько элементов в пересечении A ∩ B?`,I.length,[[Un.size,'form'],[A.length+B.length,'form'],[A.length-I.length,'form']])
+  :mk('komb',`A = ${sa(A)}, B = ${sa(B)}. A ∪ B жиынында неше элемент бар?`,`A = ${sa(A)}, B = ${sa(B)}. Сколько элементов в объединении A ∪ B?`,Un.size,[[A.length+B.length,'form'],[I.length,'form'],[Un.size-1,'ar']])}},
+{g:5,f(){const n=ri(2,5);
+ return mk('komb',`${n} элементі бар жиынның неше ішкі жиыны бар (бос жиын мен өзін қоса)?`,`Сколько подмножеств у множества из ${n} элементов (включая пустое и само множество)?`,Math.pow(2,n),[[n*n,'form'],[2*n,'form'],[Math.pow(2,n)-1,'form']])}},
+{g:6,f(){const ar=[ri(1,9),ri(1,9),ri(1,9),ri(1,9)],s0=ar.reduce((x,y)=>x+y,0);let e=ri(1,9);while((s0+e)%5)e=ri(1,9);ar.push(e);const m=(s0+e)/5,so=ar.slice().sort((x,y)=>x-y),l=ar.join(', ');
+ return mk('komb',`Деректер: ${l}. Арифметикалық ортасын тап.`,`Данные: ${l}. Найди среднее арифметическое.`,m,[[so[2],'form'],[s0+e,'form'],[so[4]-so[0],'form'],[ar[2],'trans']])}},
+{g:6,f(){const ar=[ri(1,15),ri(1,15),ri(1,15),ri(1,15),ri(1,15)],so=ar.slice().sort((x,y)=>x-y),l=ar.join(', '),mean=ar.reduce((x,y)=>x+y,0)/5;
+ return mk('komb',`Деректер: ${l}. Медианасын тап.`,`Данные: ${l}. Найди медиану.`,so[2],[[ar[2],'trans'],[mean,'form'],[so[4]-so[0],'form'],[so[1],'ar']])}},
+{g:6,f(){const n=ri(3,5);
+ return mk('komb',`1, 2, 3, ... цифрларынан (барлығы ${n} цифр) қайталанбайтын екі таңбалы неше сан құрастыруға болады?`,`Сколько двузначных чисел с разными цифрами можно составить из ${n} цифр (1, 2, 3, ...)?`,n*(n-1),[[n*n,'form'],[2*n,'form'],[n*(n-1)/2,'form']])}},
+{g:7,f(){const ar=[ri(1,9),ri(1,9),ri(1,9),ri(1,9)],s=ar.reduce((x,y)=>x+y,0);let e=ri(1,9);while((s+e)%5)e=ri(1,9);ar.push(e);const m=(s+e)/5,so=ar.slice().sort((x,y)=>x-y),l=ar.join(', ');
+ return mk('komb',`Деректер: ${l}. Орташа мәнін тап.`,`Данные: ${l}. Найди среднее арифметическое.`,m,[[so[2],'form'],[s+e,'form'],[so[4]-so[0],'form'],[ar[2],'trans']])}},
+{g:7,f(){const ar=[ri(1,15),ri(1,15),ri(1,15),ri(1,15),ri(1,15)],so=ar.slice().sort((x,y)=>x-y),l=ar.join(', '),mean=ar.reduce((x,y)=>x+y,0)/5;
+ return mk('komb',`Деректер: ${l}. Медианасын тап.`,`Данные: ${l}. Найди медиану.`,so[2],[[ar[2],'trans'],[mean,'form'],[so[4]-so[0],'form'],[so[1],'ar']])}},
+{g:8,f(){const v=ri(0,2);
+ if(v===0){const n=ri(3,6);return mk('komb',`${n} оқушыны қатарға неше тәсілмен тұрғызуға болады?`,`Сколькими способами можно выстроить в ряд ${n} учеников?`,fact(n),[[n*n,'form'],[n*(n-1),'form'],[n,'form'],[fact(n+1),'ar']])}
+ if(v===1){const n=ri(5,8),k=pk([2,3]),P=fact(n)/fact(n-k),Cn=P/fact(k);return mk('komb',`${n} оқушыдан ${k} оқушыны таңдау үшін неше тәсіл бар?`,`Сколькими способами можно выбрать ${k} учеников из ${n}?`,Cn,[[P,'form'],[n*k,'form'],[Math.pow(n,k),'form'],[Cn+n,'ar']])}
+ const a=ri(3,8),b=ri(3,8);return mk('komb',`${a} көйлек пен ${b} юбкадан бір көйлек пен бір юбкадан тұратын неше түрлі жиынтық құрастыруға болады?`,`Сколько разных комплектов из одного платья и одной юбки можно составить из ${a} платьев и ${b} юбок?`,a*b,[[a+b,'form'],[a*b*2,'ar'],[a*b-a,'ar'],[a*b+a,'ar']])}},
+{g:8,f(){const r=ri(2,7),b=ri(2,7);
+ return mk('komb',`Қапта ${r} қызыл және ${b} көк шар бар. Кездейсоқ алынған шардың қызыл болу ықтималдығын тап.`,`В мешке ${r} красных и ${b} синих шаров. Найди вероятность вытащить красный шар.`,fr(r,r+b),[[fr(r,b),'form'],[fr(b,r+b),'trans'],[fr(1,r+b),'form'],[fr(r+1,r+b),'ar']])}}
+],
+koo:[
+{g:5,f(){const k=ri(1,9),w=ri(1,4);
+ return mk('koo',`Координаталық сәуледе бірлік кесінді 10 тең бөлікке бөлінген. A нүктесі ${w}-ден кейінгі ${k}-ші бөліктің шегінде. A нүктесінің координатасы қанша?`,`На координатном луче единичный отрезок разделён на 10 равных частей. Точка A стоит на ${k}-м делении после ${w}. Какова координата точки A?`,w+k/10,[[(w+k)/10,'form'],[k+w/10,'trans'],[w*k/10,'form'],[w+k,'ar']])}},
+{g:5,f(){const a=ri(1,40)/10,b=a+ri(5,50)/10;
+ return mk('koo',`Координаталық сәуледе A(${num(a)}) және B(${num(b)}) нүктелері белгіленген. AB кесіндісінің ұзындығы қанша?`,`На координатном луче отмечены A(${num(a)}) и B(${num(b)}). Найди длину отрезка AB.`,Math.round((b-a)*10)/10,[[Math.round((a+b)*10)/10,'sign'],[Math.round((b-a)*100)/10,'ar'],[Math.round((b*a)*100)/100,'form']])}},
+{g:6,f(){const a=nz(-9,9);let b=nz(-9,9);while(b===a)b=nz(-9,9);
+ return mk('koo',`Координаталық түзуде A(${a}) және B(${b}) нүктелерінің арақашықтығы қанша?`,`Чему равно расстояние между точками A(${a}) и B(${b}) на координатной прямой?`,Math.abs(a-b),[[a+b,'sign'],[Math.abs(Math.abs(a)-Math.abs(b)),'sign'],[a-b,'sign'],[Math.abs(a-b)+1,'ar']])}},
+{g:6,f(){const x=nz(-9,9),y=nz(-9,9),q=x>0&&y>0?'I':x<0&&y>0?'II':x<0&&y<0?'III':'IV';
+ return mk('koo',`A(${x}; ${y}) нүктесі қай координаталық ширекте орналасқан?`,`В какой координатной четверти лежит точка A(${x}; ${y})?`,q,['I','II','III','IV'].filter(v=>v!==q).map(v=>[v,'sign']))}},
+{g:6,f(){const x=nz(-7,7),y=nz(-7,7);
+ return mk('koo',`A(${x}; ${y}) нүктесінің координаталар басына қатысты центрлік симметриялы нүктесін тап.`,`Найди точку, центрально симметричную точке A(${x}; ${y}) относительно начала координат.`,pt(-x,-y),[[pt(-x,y),'sign'],[pt(x,-y),'sign'],[pt(y,x),'trans'],[pt(-y,-x),'trans']])}},
+{g:7,f(){const [p,q,h]=pk(TR.slice(0,4)),x1=ri(-5,5),y1=ri(-5,5),dx=pk([p,q]),dy=dx===p?q:p,x2=x1+(ri(0,1)?dx:-dx),y2=y1+(ri(0,1)?dy:-dy);
+ return mk('koo',`A(${x1}; ${y1}) және B(${x2}; ${y2}) нүктелерінің арақашықтығын тап.`,`Найди расстояние между точками A(${x1}; ${y1}) и B(${x2}; ${y2}).`,h,[[dx+dy,'form'],[dx*dx+dy*dy,'form'],[Math.abs(dx-dy),'form'],[h+1,'ar']])}},
+{g:7,f(){const x1=ri(-6,6),y1=ri(-6,6),dx=2*nz(-4,4),dy=2*nz(-4,4),x2=x1+dx,y2=y1+dy,mx=x1+dx/2,my=y1+dy/2;
+ return mk('koo',`A(${x1}; ${y1}) және B(${x2}; ${y2}) кесіндісінің ортасының координаталарын тап.`,`Найди координаты середины отрезка с концами A(${x1}; ${y1}) и B(${x2}; ${y2}).`,pt(mx,my),[[pt(x1+x2,y1+y2),'form'],[pt(my,mx),'trans'],[pt(dx/2,dy/2),'sign'],[pt(mx+1,my),'ar']])}},
+{g:7,f(){const x=nz(-7,7),y=nz(-7,7),ox=ri(0,1);
+ return ox?mk('koo',`A(${x}; ${y}) нүктесінің Ox осіне қатысты симметриялы нүктесін тап.`,`Найди точку, симметричную точке A(${x}; ${y}) относительно оси Ox.`,pt(x,-y),[[pt(-x,y),'form'],[pt(-x,-y),'form'],[pt(y,x),'trans']])
+  :mk('koo',`A(${x}; ${y}) нүктесінің Oy осіне қатысты симметриялы нүктесін тап.`,`Найди точку, симметричную точке A(${x}; ${y}) относительно оси Oy.`,pt(-x,y),[[pt(x,-y),'form'],[pt(-x,-y),'form'],[pt(y,x),'trans']])}},
+{g:9,f(){let x1,y1,x2,y2;do{x1=ri(-6,6);y1=ri(-6,6);x2=ri(-6,6);y2=ri(-6,6)}while(x1===x2&&y1===y2);
+ return mk('koo',`A(${x1}; ${y1}) және B(${x2}; ${y2}) нүктелері берілген. AB векторының координаталарын тап.`,`Даны точки A(${x1}; ${y1}) и B(${x2}; ${y2}). Найди координаты вектора AB.`,pt(x2-x1,y2-y1),[[pt(x1-x2,y1-y2),'sign'],[pt(x1+x2,y1+y2),'form'],[pt(y2-y1,x2-x1),'trans'],[pt(x2-x1,y1-y2),'sign']])}},
+{g:9,f(){const [p,q,h]=pk(TR.slice(0,4)),vx=p*pk([1,-1]),vy=q*pk([1,-1]);
+ return mk('koo',`a(${vx}; ${vy}) векторының ұзындығын тап.`,`Найди длину вектора a(${vx}; ${vy}).`,h,[[p+q,'form'],[p*p+q*q,'form'],[Math.abs(p-q),'form'],[h+1,'ar']])}},
+{g:9,f(){const a=nz(-5,5),b=nz(-5,5),[p,q,h]=pk(TR.slice(0,4)),e=`(x ${sg(-a)})² + (y ${sg(-b)})² = ${h*h}`;
+ return ri(0,1)?mk('koo',`${e} шеңберінің центрінің координаталарын тап.`,`Найди координаты центра окружности ${e}.`,pt(a,b),[[pt(-a,-b),'sign'],[pt(b,a),'trans'],[pt(a,-b),'sign'],[pt(-a,b),'sign']])
+  :mk('koo',`${e} шеңберінің радиусын тап.`,`Найди радиус окружности ${e}.`,h,[[h*h,'form'],[h/2,'form'],[h+1,'ar'],[h-1,'ar']])}}
+],
+fun:[
+{g:7,f(){const k=nz(-5,5),b=nz(-9,9),x0=nz(-4,5),e=`y = ${k}x ${sg(b)}`;
+ return mk('fun',`${e} функциясының x = ${x0} болғандағы мәнін тап.`,`Найди значение функции ${e} при x = ${x0}.`,k*x0+b,[[k*x0-b,'sign'],[k+x0+b,'form'],[k*(x0+b),'form'],[(k+b)*x0,'form']])}},
+{g:7,f(){const r=nz(-6,6),k=pk([-5,-4,-3,-2,2,3,4,5]),b=-k*r,e=`y = ${k}x ${sg(b)}`;
+ return mk('fun',`${e} функциясының нөлін (графигінің Ox осімен қиылысу нүктесінің абсциссасын) тап.`,`Найди нуль функции ${e} (абсциссу точки пересечения графика с осью Ox).`,r,[[-r,'sign'],[b,'form'],[k,'form'],[-b*k,'form']])}},
+{g:7,f(){const k=nz(-4,4),x1=ri(-4,0),x2=x1+ri(1,4),y1=ri(-6,6),y2=y1+k*(x2-x1);
+ return mk('fun',`Түзу A(${x1}; ${y1}) және B(${x2}; ${y2}) нүктелері арқылы өтеді. Бұрыштық коэффициентін тап.`,`Прямая проходит через точки A(${x1}; ${y1}) и B(${x2}; ${y2}). Найди угловой коэффициент.`,k,[[-k,'sign'],[fr(x2-x1,y2-y1),'form'],[fr(y2+y1,x2+x1||1),'form'],[k+1,'ar']])}},
+{g:8,f(){const a=ri(1,3),p=nz(-4,4),b=-2*a*p,c=nz(-5,5),e=`y = ${a}x² ${sg(b)}x ${sg(c)}`;
+ return mk('fun',`${e} параболасының төбесінің абсциссасын тап.`,`Найди абсциссу вершины параболы ${e}.`,p,[[-p,'sign'],[b,'form'],[-b/a,'form'],[p/2,'ar']])}}
+],
+fig:[
+{g:5,f(){const r=ri(2,15);
+ return ri(0,1)?mk('fig',`Дөңгелектің радиусы ${r} см. Диаметрі қанша?`,`Радиус круга ${r} см. Чему равен диаметр?`,2*r,[[r/2,'form'],[r,'form'],[r*r,'form']])
+ :mk('fig',`Шеңбердің диаметрі ${2*r} см. Радиусы қанша?`,`Диаметр окружности ${2*r} см. Чему равен радиус?`,r,[[4*r,'form'],[2*r,'form'],[r*r,'form']])}},
+{g:5,f(){const a=pk([30,45,60,90,120,180]);
+ return mk('fig',`Дөңгелек секторының центрлік бұрышы ${a}°. Сектор дөңгелектің қандай бөлігі?`,`Центральный угол сектора круга ${a}°. Какую часть круга занимает сектор?`,fr(a,360),[[fr(a,180),'form'],[fr(360,a),'form'],[fr(a,100),'form'],[fr(a,90),'form']])}},
+{g:5,f(){const n=ri(5,10),a=ri(2,9);
+ return mk('fig',`Қабырғасы ${a} см дұрыс ${n}-бұрыштың барлық қабырғаларының қосындысы қанша?`,`Чему равна сумма длин всех сторон правильного ${n}-угольника со стороной ${a} см?`,n*a,[[n+a,'form'],[a*a,'form'],[(n-2)*a,'form']])}},
+{g:7,f(){const a=ri(30,80),b=ri(30,80);
+ return mk('fig',`Үшбұрыштың екі бұрышы ${a}° және ${b}°. Үшінші бұрышын тап.`,`Два угла треугольника равны ${a}° и ${b}°. Найди третий угол.`,180-a-b,[[a+b,'form'],[360-a-b,'form'],[90-a,'form'],[180-a+b,'sign']])}},
+{g:7,f(){const al=2*ri(15,50),bs=(180-al)/2;
+ return mk('fig',`Тең бүйірлі үшбұрыштың төбесіндегі бұрышы ${al}°. Табанындағы бұрышын тап.`,`Угол при вершине равнобедренного треугольника равен ${al}°. Найди угол при основании.`,bs,[[180-al,'form'],[al/2,'form'],[(360-al)/2,'form'],[bs+10,'ar']])}},
+{g:8,f(){const n=ri(5,10);
+ return mk('fig',`Дөңес ${n}-бұрыштың ішкі бұрыштарының қосындысын тап.`,`Найди сумму внутренних углов выпуклого ${n}-угольника.`,(n-2)*180,[[(n-1)*180,'form'],[n*180,'form'],[(n-2)*90,'form'],[360,'form']])}},
+{g:8,f(){const n=pk([5,6,8,9,10,12]),v=(n-2)*180/n;
+ return mk('fig',`Дұрыс ${n}-бұрыштың бір ішкі бұрышын тап.`,`Найди внутренний угол правильного ${n}-угольника.`,v,[[360/n,'form'],[(n-2)*180,'form'],[180/n,'form'],[v-10,'ar']])}},
+{g:9,f(){const x=2*ri(20,80);
+ return mk('fig',`Шеңбердегі центрлік бұрыш ${x}°. Сол доғаға тірелетін іштей сызылған бұрышты тап.`,`Центральный угол окружности равен ${x}°. Найди вписанный угол, опирающийся на ту же дугу.`,x/2,[[x*2,'form'],[x,'form'],[180-x,'form'],[x/2+10,'ar']])}},
+{g:9,f(){const x=ri(50,130);
+ return mk('fig',`Шеңберге іштей сызылған төртбұрыштың бір бұрышы ${x}°. Оған қарсы жатқан бұрышын тап.`,`Один из углов четырёхугольника, вписанного в окружность, равен ${x}°. Найди противолежащий ему угол.`,180-x,[[x,'form'],[360-x,'form'],[180-x+10,'ar'],[180-x-10,'ar']])}}
+],
+per:[
+{g:5,f(){const a=ri(3,15),b=ri(2,12);
+ return mk('per',`Тіктөртбұрыштың қабырғалары ${a} см және ${b} см. Периметрін тап.`,`Стороны прямоугольника ${a} см и ${b} см. Найди периметр.`,2*(a+b),[[a+b,'form'],[a*b,'form'],[2*a*b,'form']])}},
+{g:5,f(){const a=ri(3,15),b=ri(2,12);
+ return mk('per',`Тіктөртбұрыштың қабырғалары ${a} см және ${b} см. Ауданын тап.`,`Стороны прямоугольника ${a} см и ${b} см. Найди площадь.`,a*b,[[2*(a+b),'form'],[a+b,'form'],[a*b*2,'form']])}},
+{g:5,f(){const s=ri(2,12);
+ return mk('per',`Шаршының периметрі ${4*s} см. Ауданын тап.`,`Периметр квадрата ${4*s} см. Найди площадь.`,s*s,[[4*s*4*s,'form'],[2*s*2*s*2,'form'],[4*s,'form'],[s*4,'form']])}},
+{g:5,f(){const a=ri(3,12),b=ri(2,11);
+ return mk('per',`Тіктөртбұрыштың ауданы ${a*b} см², бір қабырғасы ${a} см. Екінші қабырғасын тап.`,`Площадь прямоугольника ${a*b} см², одна сторона ${a} см. Найди другую сторону.`,b,[[a*b-a,'form'],[a*b*a,'form'],[(a*b)/2,'form']])}},
+{g:7,f(){const a=ri(3,12),b=ri(2,10),ar=ri(0,1);
+ return ar?mk('per',`Тіктөртбұрыштың қабырғалары ${a} см және ${b} см. Ауданын тап (см²).`,`Стороны прямоугольника ${a} см и ${b} см. Найди площадь (см²).`,a*b,[[2*(a+b),'form'],[a+b,'form'],[a*b*2,'form'],[a*b+1,'ar']])
+  :mk('per',`Тіктөртбұрыштың қабырғалары ${a} см және ${b} см. Периметрін тап (см).`,`Стороны прямоугольника ${a} см и ${b} см. Найди периметр (см).`,2*(a+b),[[a*b,'form'],[a+b,'form'],[2*a*b,'form'],[2*(a+b)+2,'ar']])}},
+{g:7,f(){const b=2*ri(2,8),h=ri(3,12);
+ return mk('per',`Үшбұрыштың табаны ${b} см, биіктігі ${h} см. Ауданын тап (см²).`,`Основание треугольника ${b} см, высота ${h} см. Найди площадь (см²).`,b*h/2,[[b*h,'form'],[b+h,'form'],[b*h/4,'form'],[(b+h)/2,'form']])}},
+{g:7,f(){const a=ri(2,8),b=ri(2,8),c=ri(2,8);
+ return mk('per',`Тіктөртбұрышты параллелепипедтің өлшемдері ${a} см, ${b} см, ${c} см. Көлемін тап (см³).`,`Измерения прямоугольного параллелепипеда ${a} см, ${b} см, ${c} см. Найди объём (см³).`,a*b*c,[[2*(a*b+b*c+a*c),'form'],[a+b+c,'form'],[a*b+c,'form'],[a*b*c+a,'ar']])}},
+{g:8,f(){const r=ri(2,10);
+ return mk('per',`Радиусы ${r} см дөңгелектің ауданын тап (π ≈ 3,14; см²).`,`Найди площадь круга радиусом ${r} см (π ≈ 3,14; см²).`,3.14*r*r,[[2*3.14*r,'form'],[3.14*4*r*r,'form'],[3.14*r,'form'],[3.14*r*r*2,'form']])}},
+{g:9,f(){const r=pk([6,12]),al=pk([60,90,120,180]),l=al*r/180,S=al*r*r/360;
+ return ri(0,1)?mk('per',`Радиусы ${r} см дөңгелек секторының центрлік бұрышы ${al}°. Сектор ауданын тап (жауабын π арқылы жаз, см²).`,`Радиус круга ${r} см, центральный угол сектора ${al}°. Найди площадь сектора (ответ через π, см²).`,S+'π',[[l+'π','form'],[(2*S)+'π','form'],[(r*r)+'π','form'],[(2*r)+'π','form'],[(S+r)+'π','ar'],[(3*S)+'π','ar']])
+  :mk('per',`Радиусы ${r} см шеңбердің центрлік бұрышы ${al}° болатын доғасының ұзындығын тап (жауабын π арқылы жаз, см).`,`Радиус окружности ${r} см. Найди длину дуги с центральным углом ${al}° (ответ через π, см).`,l+'π',[[S+'π','form'],[(2*l)+'π','form'],[(2*r)+'π','form'],[r+'π','form'],[(l+r)+'π','ar'],[(3*l)+'π','ar'],[(l+2)+'π','ar'],[(4*l)+'π','ar']])}}
+],
+bur:[
+{g:5,f(){const a=ri(40,160),b=ri(10,a-10);
+ return mk('bur',`OB сәулесі ∠AOC ішінде өтеді. ∠AOC = ${a}°, ∠AOB = ${b}°. ∠BOC қанша?`,`Луч OB проходит внутри угла AOC. ∠AOC = ${a}°, ∠AOB = ${b}°. Чему равен ∠BOC?`,a-b,[[a+b,'sign'],[180-a,'form'],[90-b,'form']])}},
+{g:5,f(){const a=ri(20,160);
+ return mk('bur',`Жазыңқы бұрыштың бір бөлігі ${a}°. Екінші бөлігін тап.`,`Развёрнутый угол разбит на два угла, один ${a}°. Найди другой.`,180-a,[[90-a,'form'],[360-a,'form'],[a,'form'],[180+a,'sign']])}},
+{g:5,f(){const a=ri(10,80);
+ return mk('bur',`Тік бұрыштың бір бөлігі ${a}°. Екінші бөлігін тап.`,`Прямой угол разбит на два угла, один ${a}°. Найди другой.`,90-a,[[180-a,'form'],[a,'form'],[90+a,'sign'],[360-a,'form']])}},
+{g:7,f(){const x=ri(20,85),adj=ri(0,1);
+ return adj?mk('bur',`Іргелес екі бұрыштың бірі ${x}°. Екіншісін тап.`,`Один из двух смежных углов равен ${x}°. Найди другой.`,180-x,[[90-x,'form'],[360-x,'form'],[x,'form'],[180-x+10,'ar']])
+  :mk('bur',`Екі түзу қиылысқанда пайда болған бұрыштардың бірі ${x}°. Оған вертикаль бұрышты тап.`,`При пересечении двух прямых один из углов равен ${x}°. Найди вертикальный ему угол.`,x,[[180-x,'form'],[90-x,'form'],[360-2*x,'form'],[x+10,'ar']])}},
+{g:7,f(){const x=ri(40,130);
+ return mk('bur',`a ∥ b түзулерін c қиюшысы қияды. Бір жақты ішкі бұрыштардың бірі ${x}°. Екіншісін тап.`,`Параллельные прямые a и b пересечены секущей c. Один из односторонних внутренних углов равен ${x}°. Найди другой.`,180-x,[[x,'form'],[90-x,'form'],[360-x,'form'],[180-x+10,'ar']])}},
+{g:7,f(){const a=ri(30,80),b=ri(30,80);
+ return mk('bur',`Үшбұрыштың екі ішкі бұрышы ${a}° және ${b}°. Үшінші төбедегі сыртқы бұрышын тап.`,`Два внутренних угла треугольника равны ${a}° и ${b}°. Найди внешний угол при третьей вершине.`,a+b,[[180-a-b,'form'],[Math.abs(a-b),'sign'],[360-a-b,'form'],[a+b+10,'ar']])}},
+{g:9,f(){const x=2*ri(20,85);
+ return mk('bur',`Жанама мен хорда арасындағы бұрыштың ішінде жатқан доғаның градустық өлшемі ${x}°. Осы бұрышты тап.`,`Градусная мера дуги, лежащей внутри угла между касательной и хордой, равна ${x}°. Найди этот угол.`,x/2,[[x,'form'],[x*2,'form'],[180-x,'form'],[x/2+10,'ar']])}}
+],
+tri:[
+{g:8,f(){const [p,q,h]=pk(TR.slice(0,4)),k=pk([1,2]),a=p*k,b=q*k,c=h*k,w=ri(0,2),nm=['sin','cos','tan'][w],ans=[fr(a,c),fr(b,c),fr(a,b)],wr=[[fr(b,c),'form'],[fr(a,c),'form'],[fr(a,b),'form'],[fr(c,a),'form']];
+ return mk('tri',`Тікбұрышты үшбұрышта A сүйір бұрышына қарсы катет ${a}, іргелес катет ${b}, гипотенуза ${c}. ${nm} A мәнін тап.`,`В прямоугольном треугольнике противолежащий углу A катет равен ${a}, прилежащий ${b}, гипотенуза ${c}. Найди ${nm} A.`,ans[w],wr.filter(x=>x[0]!==ans[w]).concat([[fr(c,b),'form']]))}},
+{g:8,f(){const [p,q,h]=pk(TR.slice(0,4)),k=pk([1,2]),a=p*k,b=q*k,c=h*k;
+ return ri(0,1)?mk('tri',`Тікбұрышты үшбұрыштың катеттері ${a} және ${b}. Гипотенузасын тап.`,`Катеты прямоугольного треугольника равны ${a} и ${b}. Найди гипотенузу.`,c,[[a+b,'form'],[a*a+b*b,'form'],[Math.abs(b-a),'form'],[c+1,'ar']])
+  :mk('tri',`Тікбұрышты үшбұрыштың гипотенузасы ${c}, катеттерінің бірі ${a}. Екінші катетін тап.`,`Гипотенуза прямоугольного треугольника равна ${c}, один из катетов ${a}. Найди другой катет.`,b,[[c-a,'form'],[c*c-a*a,'form'],[c+a,'sign'],[b+1,'ar']])}},
+{g:8,f(){const T=[['sin 30°','1/2'],['cos 60°','1/2'],['sin 60°','√3/2'],['cos 30°','√3/2'],['sin 45°','√2/2'],['cos 45°','√2/2'],['tan 45°','1'],['tan 30°','√3/3'],['tan 60°','√3']],x=pk(T),vals=[...new Set(T.map(y=>y[1]))].filter(v=>v!==x[1]);
+ return mk('tri',`${x[0]} мәнін тап.`,`Найди значение ${x[0]}.`,x[1],sh(vals).map(v=>[v,'form']))}},
+{g:9,f(){const T=[[3,8,60,7],[5,8,60,7],[8,15,60,13],[7,15,60,13],[3,5,120,7],[7,8,120,13],[5,16,120,19]],[a,b,A,c]=pk(T),s=A===60?1:-1,
+  rt=n=>{const r=Math.round(Math.sqrt(n));return r*r===n?r:'√'+n};
+ return mk('tri',`Үшбұрыштың екі қабырғасы ${a} және ${b}, олардың арасындағы бұрыш ${A}°. Үшінші қабырғасын тап.`,`Две стороны треугольника равны ${a} и ${b}, угол между ними ${A}°. Найди третью сторону.`,c,[[rt(a*a+b*b+s*a*b),'sign'],[rt(a*a+b*b),'form'],[c*c,'form'],[a+b,'form']])}},
+{g:9,f(){const a=pk([4,6,8,10,12]),B=pk([45,60]),k=B===45?'√2':'√3',inv=B===45?(a/2)+'√2':a+'√3/3';
+ return mk('tri',`Үшбұрышта ∠A = 30°, ∠B = ${B}°, BC = ${a}. AC қабырғасын тап.`,`В треугольнике ∠A = 30°, ∠B = ${B}°, BC = ${a}. Найди AC.`,a+k,[[inv,'form'],[(2*a)+'','form'],[a+(B===45?'√3':'√2'),'form'],[a+'','form']])}}
+]
+};
+window.BANK={
+  has(code,g){return g>=7||G[code].some(x=>x.g<=g)},
+  pool(code,g){const l=G[code].filter(x=>g>=7?(x.g<=g&&x.g>=7):x.g<=g);return l.length?l:G[code]},
+  q(code,g){return pk(this.pool(code,g)).f()},
+  qs(code,g,n){const pool=sh(this.pool(code,g)),out=[],used=new Set();
+    for(let i=0;out.length<n&&i<n*12;i++){const q=pool[i%pool.length].f();if(!used.has(q.q.kk)){used.add(q.q.kk);out.push(q)}}
+    return out},
+  chapters:Object.keys(G)
+};
+if(typeof module!=='undefined')module.exports=window.BANK;
+})();
+
+</script>
+<script data-plan>
+/* Күнделікті жоспар қозғалтқышы: таза функция, сайттың күйіне тәуелді емес (Node-та тексеруге болады).
+   Кіріс: start (YYYY-MM-DD), H (күн саны), ch (тарау тізімі: k, need 1..4, why, sc, dom),
+          all (қайталау реті), n (жаттығу көлемі), tn (тест көлемі).
+   Шығыс: days:[{date,items:[{id,t,ch,n,...}]}], trimmed (сыймай қалған тарау саны). */
+(function(){
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const addD=(s,n)=>{const p=s.split('-').map(Number);return iso(new Date(p[0],p[1]-1,p[2]+n))};
+/* need: 1 негізді тексеру, 2 жақсартуға жақын, 3 олқылық, 4 үлкен олқылық */
+const STEPS={1:['practice','test'],2:['practice','fix','test'],3:['theory','practice','fix','test'],4:['theory','practice','fix','practice2','test']};
+const mkItem=(s,c,o)=>{const b={ch:c.k,w:c.why,sc:c.sc};
+  if(s==='theory')return{...b,id:'theory-'+c.k,t:'theory'};
+  if(s==='practice')return{...b,id:'practice-'+c.k,t:'practice',n:o.n,e:c.dom||null};
+  if(s==='practice2')return{...b,id:'practice2-'+c.k,t:'practice',x:1,n:o.n,e:c.dom||null};
+  if(s==='fix')return{...b,id:'fix-'+c.k,t:'fix',n:Math.ceil(o.n/2),e:c.dom||null};
+  return{...b,id:'test-'+c.k,t:'test',n:o.tn}};
+const tasksOf=its=>its.reduce((a,i)=>a+(i.t==='retest'?10:(i.n||0)),0);
+
+function build(o){
+  const H=o.H,days=[];
+  for(let i=0;i<H;i++)days.push({date:addD(o.start,i),items:[]});
+  const out={days,trimmed:0,ends:[]};
+  if(H<=0)return out;
+  const fin=H>=5?1:0,avail=H-fin;           // соңғы күн: деңгейлік тестті қайта тапсыру
+  let list=(o.ch||[]).slice();
+  if(list.length>avail){                     // мерзім қысқа: ең қажеттілерін қалдырамыз
+    const keep=list.map((c,i)=>i).sort((a,b)=>list[b].need-list[a].need||a-b).slice(0,Math.max(avail,0)).sort((a,b)=>a-b);
+    out.trimmed=list.length-keep.length;list=keep.map(i=>list[i]);
+  }
+  const full=list.map(c=>STEPS[c.need]||STEPS[2]),tot=full.reduce((a,s)=>a+s.length,0);
+  let rooms=full.map(s=>s.length);
+  if(tot>avail){                             // күн аз: қадамдарды күндерге тығыздаймыз
+    rooms=full.map(s=>Math.max(1,Math.floor(s.length*avail/tot)));
+    let used=rooms.reduce((a,b)=>a+b,0);
+    const ord=list.map((c,i)=>i).sort((a,b)=>list[b].need-list[a].need||a-b);
+    for(let j=0;used<avail&&j<ord.length*5;j++){const i=ord[j%ord.length];if(rooms[i]<full[i].length){rooms[i]++;used++}}
+    while(used>avail){let k=-1;rooms.forEach((r,i)=>{if(r>1&&(k<0||r>rooms[k]))k=i});if(k<0)break;rooms[k]--;used--}
+  }
+  let cur=0;
+  list.forEach((c,i)=>{
+    const st=full[i],room=rooms[i];
+    for(let j=0;j<room;j++){
+      const a=Math.floor(j*st.length/room),b=Math.floor((j+1)*st.length/room);
+      st.slice(a,b).forEach(s=>days[cur+j].items.push(mkItem(s,c,o)));
+    }
+    out.ends.push({ch:c.k,end:cur+room-1});cur+=room;
+  });
+  const all=o.all&&o.all.length?o.all:list.map(c=>c.k);
+  if(all.length)for(let d=cur,j=0;d<avail;d++,j++){const ch=all[j%all.length];days[d].items.push({id:'review-'+ch,t:'review',ch,n:o.n,w:'R'})}
+  out.ends.forEach(e=>[2,6].forEach(off=>{            // аралықты қайталау: блоктан 2 және 6 күн кейін
+    const d=e.end+off;
+    if(d<avail&&days[d]&&days[d].items.length<3&&!days[d].items.some(x=>x.ch===e.ch))days[d].items.push({id:'review-'+e.ch,t:'review',ch:e.ch,n:5,w:'R'});
+  }));
+  if(H>=7)for(let i=6;i<H;i+=7)days[i].items.push({id:'reflect',t:'reflect'});
+  if(fin)days[H-1].items.push({id:'retest',t:'retest'});
+  return out;
+}
+const api={build,addD,iso,tasksOf,len:need=>(STEPS[need]||STEPS[2]).length};
+(typeof window!=='undefined'?window:globalThis).PLAN=api;
+if(typeof module!=='undefined')module.exports=api;
+})();
+</script>
+<script>
+const $=s=>document.querySelector(s),E=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+const mem={},st={g(k){try{return localStorage.getItem(k)}catch(e){return mem[k]||null}},s(k,v){try{localStorage.setItem(k,v)}catch(e){mem[k]=v}},d(k){try{localStorage.removeItem(k)}catch(e){delete mem[k]}}};
+const J=k=>{try{return JSON.parse(st.g(k))}catch(e){return null}},W=(k,v)=>st.s(k,JSON.stringify(v));
+async function H(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('mp:'+s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return btoa(unescape(encodeURIComponent(s)))}}
+
+const T={kk:{topics:'Тақырыптар (сынып: тақырып):',goalDay:'Күн мақсаты',g_test:'«{c}» бойынша тест тапсыру (мақсат ≥ 80%)',g_work:'«{c}» тарауын пысықтау',g_rev:'«{c}» тарауын қайталау',g_ref:'апта қорытындысын жазу',g_ret:'қорытынды деңгейлік тест',noItems:'Бұл күнге тапсырма жоқ.',noPast:'Бұл күні тапсырма болмаған.',futureNote:'Жоспар нәтижелеріңе қарай жаңарады.',confirmMail:'Тіркелу сәтті. Поштаңа жіберілген сілтемені растап, кейін «Кіру» бөліміне өт.',cfgErr:'config.js ішіне Supabase мәндерін жазу керек (README қара).',errStat:'Жиі қателер',admDel:'Деректерін өшіру',pdfFail:'Кітапты ашу мүмкін болмады.',aCam:'Камера',aGal:'Галерея',aFile:'Файл',abHint:'PDF файлын жүктесең, оқушы кітапты сайттың ішінде оқиды (50 МБ-қа дейін). Сілтеме міндетті емес.',big:'Файл 50 МБ-тан үлкен. Бөліп жүкте.',uploading:'Жүктелуде...',upFail:'Жүктеу сәтсіз: админ рұқсатын және bucket «books» бар екенін тексер.',read:'Оқу',loading:'Жүктелуде...',close:'Жабу',attFail:'Файлды өңдеу сәтсіз.',imgFail:'Суретті жіберу қолжетімсіз немесе файл қабылданбады.',askErr:'Қатені талда.',tag:'Математикадағы олқылықтарды анықтап, жүйелі түрде толықтыр.',reg:'Тіркелу',log:'Кіру',name:'Аты-жөні',grade:'Сынып',pass:'Құпиясөз (кемінде 6 таңба)',show:'Құпиясөзді көрсету',adminin:'Админ ретінде кіру',logout:'Шығу',n_home:'Басты бет',n_test:'Тест',n_video:'Видеосабақ және тапсырма',n_strat:'Стратегия',n_books:'Кітаптар',n_chat:'Қатемен жұмыс',n_acc:'Аккаунт және деректер',n_admin:'Админ-панель',motTitle:'Бүгінгі жазба',nextNote:'Келесі жазба',funTitle:'Математика туралы қызықты',nextFact:'Келесі факт',tests:'Тест саны',levelA:'А нүктесі',cur:'Қазіргі деңгей',goalB:'Б нүктесі',today:'Бүгін',lastRes:'Соңғы нәтиже',noRes:'Әзірге тест тапсырылған жоқ.',repeat:'Қайталау керек: ',noA:'Деңгейлік тест әлі тапсырылмаған. Ол сенің бастапқы нүктеңді (А) анықтайды.',takeIt:'Тестті тапсыру',placeT:'Деңгейлік тест',placeTxt:'10 есептен тұратын тест сенің бастапқы деңгейіңді (А нүктесі) және әлсіз тақырыптарыңды көрсетеді. Содан кейін мақсат (Б нүктесі) қойып, стратегия құрасың.',later:'Кейінге қалдыру',retake:'Деңгейлік тестті қайта тапсыру',section:'Бөлім',chapter:'Тарау',testHint:'8 есеп: тек таңдаған тарау бойынша. Басқа тақырыптың есептері араласпайды.',start:'Бастау',prep:'Дайындалуда…',prep2:'Есептер құрастырылуда, бірнеше секунд күт.',show_res:'Нәтижені көру',unans:'Кейбір сұрақтарға жауап берілмеді. Аяқтайық па?',result:'Нәтиже',noGap:'Олқылық табылған жоқ.',path:'Қайталау жолы (негіздерден бастап):',wrongT:'қате',baseT:'негіз',right:'Дұрыс жауап: ',toVideo:'Видеосабақ',toAI:'ЖИ-мен қатені талдау',toStrat:'Мақсат қойып, стратегия құру',back:'Артқа',aiOff:'ЖИ қолжетімсіз: рұқсат беріп, қайта көр.',genFail:'Тест құрастыру сәтсіз болды. Қайта көр.',vNote:'Тек таңдалған тіл мен сыныпқа арналған материалдар көрсетіледі.',noVid:'Бұл тіл мен сынып үшін бейне әзірге қосылмаған.',rec:'ұсынылады',watch:'Көру',watched:'Көрдім',taskL:'Тапсырма',taskDone:'Орындадым',chTest:'Тарау бойынша тест',lastScore:'соңғы нәтиже',step1:'1. Бейне',step2:'2. Тапсырма',step3:'3. Тест',lang:'Тіл',allL:'Барлығы',noBook:'Бұл сынып үшін кітап әзірге қосылмаған.',open:'Ашу',chatSub:'Есепті және өз шешімінді жаз: көмекші қатенің түрін тауып, қай тақырыпты қайталау керегін айтады.',cTest:'Тест қателерін талда',send:'Жіберу',cPh:'Мысалы: 2x+6=14. Менің шешуім: 2x=14+6, x=10. Қате қайда?',needTest:'Алдымен тест тапсыр, сонда қателерді талдай аламын.',rate:'Тым жиі сұрау. Біраз күтіп, қайта көр.',fail:'Жауап алу сәтсіз болды. Қайта көр.',accTitle:'Аккаунт',chPass:'Құпиясөзді өзгерту',curPass:'Қазіргі құпиясөз',newPass:'Жаңа құпиясөз (кемінде 6 таңба)',save:'Сақтау',data:'Деректер',dataSub:'Деректер серверде сақталады: кез келген құрылғыдан кіре аласың. Көшірме ретінде файлға сақтауға болады.',export:'Файлға сақтау',delAcc:'Аккаунтты өшіру',delQ:'Аккаунт пен барлық нәтиже өшіріледі. Жалғастырамыз ба?',email:'Email',cls:'Сынып',since:'Тіркелген күні',saved:'Сақталды',badMail:'Дұрыс Gmail мекенжайын енгіз (...@gmail.com).',shortP:'Құпиясөз кемінде 6 таңба болуы керек.',shortN:'Аты-жөніңді толық жаз.',exists:'Бұл Gmail тіркелген. «Кіру» бөліміне өт.',badLogin:'Gmail немесе құпиясөз қате.',wrongOld:'Қазіргі құпиясөз қате.',admSub:'Бұл бөлімді тек сайт иесі көреді. Бейне, тапсырма, кітап және жазбалар осында қосылады.',addVideo:'Бейне және тапсырма қосу',addBook:'Кітап қосу',addNote:'Мотивациялық жазба қосу',add:'Қосу',users:'Қолданушылар',usersNote:'Барлық тіркелген оқушылар.',noDb:'Сақтау сәтсіз: админ рұқсатын және Supabase байланысын тексер.',badUrl:'Дұрыс сілтеме (https://...) енгіз.',emptyT:'Атауын жаз.',del:'Өшіру',cnt:'Барлығы',byG:'сынып',ph_title:'Атауы',ph_task:'Тапсырма мәтіні (міндетті емес)',ph_taskurl:'Тапсырма сілтемесі (міндетті емес)',ph_note:'Мотивациялық мәтін',search:'Іздеу',goalTitle:'Мақсат',aToB:'А нүктесінен Б нүктесіне',goalPct:'Мақсатты балл, %',deadline:'Мерзімі',needA:'Алдымен деңгейлік тест тапсыр.',daysLeft:'Қалған күн',dailyT:'Күнделікті 10 есеп',dailyTxt:'Күніне 10 есеп: қазіргі назар аударатын тарау бойынша.',dailyGo:'Бүгінгі 10 есепті бастау',streak:'Қатарынан күн',planT:'Жоспар',planNote:'Әр тарау: бейне, тапсырма, тест. Тарау тесті 80%-дан асқанда аяқталған деп есептеледі.',days:'күн',status:'Күйі',done:'аяқталды',inProg:'жұмыста',todo:'басталмаған',myStrat:'Менің стратегиям',stratSub:'ЖИ нәтижең, мақсатың және мерзіміңе қарай жеке кеңес жазады.',genStrat:'Стратегия жазу',myNotes:'Өз жазбаларың',focus:'Қазіргі назар',of:'/',min:'мин',minsDay:'Күніне уақыт',todayPlan:'Бүгінгі жоспар',noToday:'Бүгінге жоспар жоқ. «Жоспарды жаңарту» батырмасын бас.',calT:'Күндер бойынша жоспар',mapT:'Тарау картасы',replan:'Жоспарды жаңарту',tasks:'есеп',tomorrow:'Ертең',openPlan:'Жоспарды ашу',it_theory:'Теория',it_practice:'Жаттығу',it_practice2:'Бекіту жаттығуы',it_fix:'Қатемен жұмыс',it_test:'Тарау тесті',it_review:'Қайталау',it_reflect:'Апталық рефлексия',it_retest:'Деңгейлік тест',s_theory:'Бейне: ',s_theory0:'Бейнені көр және тапсырманы орында. Бейне жоқ болса, «Кітаптар» бөлімінен теорияны оқы.',s_fix:'Алдыңғы қателерді ЖИ-мен талда, сосын осы тақырыпты қайта шығар',s_test:'тек осы тақырып, 80%-дан жоғары болса тарау жабылады',s_review:'аралықты қайталау: ұмытпау үшін',s_reflect:'Аптаны қорытындыла: ең жиі қате қайсы, келесі аптада нені өзгертесің? «Өз жазбаларың» бөліміне жаз.',s_retest:'Деңгейлік тестті қайта тапсырып, А→Б прогресін өлше.',s_focus:'ең жиі қателерге назар',tip_ar:'есептеуді екі рет тексер',tip_sign:'әр қадамда таңбаны жаз',tip_form:'алдымен формуланы жаз, сосын сандарды қой',tip_trans:'түрлендіруді қадамдап жаз',why_A:'деңгейлік тесттегі олқылық',why_S:'соңғы нәтиже',why_B:'негізді тексеру',hist:'Соңғы күндер',trimmed:'Мерзім қысқа: {n} тарау жоспарға сыймады. Мерзімді ұзарт немесе күніне уақытты арттыр.',noDeadline:'Мерзім қойылмаған: жоспар {n} күнге құрылды. Мерзім қойсаң, жоспар соған бейімделеді.',planFrom:'жоспар',testOn:'тест',write:'Жазу',yours:'сенің жауабың',correct:'дұрыс',noAns:'Жауап берілмеді',wrongAns:'Сенің жауабың қате:',mistakes:'Қателер',practice:'Жаттығу',closedMsg:'Тарау игерілді (80%-дан жоғары). Жекелеген қателерді талдап шық.',toPlan:'Жоспарға оралу'},
+ru:{topics:'Темы (класс: темы):',goalDay:'Цель дня',g_test:'сдать тест по «{c}» (цель ≥ 80%)',g_work:'проработать главу «{c}»',g_rev:'повторить главу «{c}»',g_ref:'записать итоги недели',g_ret:'итоговый тест уровня',noItems:'На этот день заданий нет.',noPast:'В этот день заданий не было.',futureNote:'План обновится по твоим результатам.',confirmMail:'Регистрация прошла. Подтверди ссылку из письма и войди во вкладке «Вход».',cfgErr:'Нужно вписать значения Supabase в config.js (см. README).',errStat:'Частые ошибки',admDel:'Удалить данные',pdfFail:'Не удалось открыть книгу.',aCam:'Камера',aGal:'Галерея',aFile:'Файл',abHint:'Если загрузишь PDF, ученик будет читать книгу внутри сайта (до 50 МБ). Ссылка необязательна.',big:'Файл больше 50 МБ. Загрузи по частям.',uploading:'Загрузка...',upFail:'Не удалось загрузить: проверь права админа и наличие bucket «books».',read:'Читать',loading:'Загрузка...',close:'Закрыть',attFail:'Не удалось обработать файл.',imgFail:'Отправка изображений недоступна или файл не принят.',askErr:'Разбери ошибку.',tag:'Находи пробелы в математике и закрывай их системно.',reg:'Регистрация',log:'Вход',name:'ФИО',grade:'Класс',pass:'Пароль (не менее 6 символов)',show:'Показать пароль',adminin:'Войти как админ',logout:'Выйти',n_home:'Главная',n_test:'Тест',n_video:'Видеоурок и задание',n_strat:'Стратегия',n_books:'Книги',n_chat:'Работа над ошибками',n_acc:'Аккаунт и данные',n_admin:'Админ-панель',motTitle:'Заметка дня',nextNote:'Следующая заметка',funTitle:'Интересное о математике',nextFact:'Следующий факт',tests:'Тестов',levelA:'Точка А',cur:'Текущий уровень',goalB:'Точка Б',today:'Сегодня',lastRes:'Последний результат',noRes:'Тесты пока не пройдены.',repeat:'Нужно повторить: ',noA:'Входной тест ещё не пройден. Он определит твою стартовую точку (А).',takeIt:'Пройти тест',placeT:'Входной тест',placeTxt:'Тест из 10 задач покажет твой стартовый уровень (точка А) и слабые темы. Затем ты поставишь цель (точка Б) и составишь стратегию.',later:'Отложить',retake:'Пройти входной тест заново',section:'Раздел',chapter:'Глава',testHint:'8 задач: только по выбранной главе. Задачи других тем не добавляются.',start:'Начать',prep:'Подготовка…',prep2:'Задачи составляются, подожди несколько секунд.',show_res:'Показать результат',unans:'Не на все вопросы дан ответ. Завершить?',result:'Результат',noGap:'Пробелов не найдено.',path:'Маршрут повторения (от основ):',wrongT:'ошибка',baseT:'основа',right:'Верный ответ: ',toVideo:'Видеоурок',toAI:'Разбор ошибок с ИИ',toStrat:'Поставить цель и составить стратегию',back:'Назад',aiOff:'ИИ недоступен: дай разрешение и попробуй снова.',genFail:'Не удалось составить тест. Попробуй ещё раз.',vNote:'Показаны материалы только для выбранных языка и класса.',noVid:'Для этого языка и класса видео пока не добавлены.',rec:'рекомендуется',watch:'Смотреть',watched:'Просмотрено',taskL:'Задание',taskDone:'Выполнено',chTest:'Тест по главе',lastScore:'последний результат',step1:'1. Видео',step2:'2. Задание',step3:'3. Тест',lang:'Язык',allL:'Все',noBook:'Для этого класса книги пока не добавлены.',open:'Открыть',chatSub:'Напиши задачу и своё решение: помощник найдёт тип ошибки и подскажет, какую тему повторить.',cTest:'Разобрать ошибки теста',send:'Отправить',cPh:'Например: 2x+6=14. Моё решение: 2x=14+6, x=10. Где ошибка?',needTest:'Сначала пройди тест, тогда я смогу разобрать ошибки.',rate:'Слишком частые запросы. Подожди и повтори.',fail:'Не удалось получить ответ. Попробуй ещё раз.',accTitle:'Аккаунт',chPass:'Смена пароля',curPass:'Текущий пароль',newPass:'Новый пароль (не менее 6 символов)',save:'Сохранить',data:'Данные',dataSub:'Данные хранятся на сервере: можно входить с любого устройства. Копию можно сохранить в файл.',export:'Сохранить в файл',delAcc:'Удалить аккаунт',delQ:'Аккаунт и все результаты будут удалены. Продолжить?',email:'Email',cls:'Класс',since:'Дата регистрации',saved:'Сохранено',badMail:'Введи корректный Gmail (...@gmail.com).',shortP:'Пароль должен быть не короче 6 символов.',shortN:'Напиши ФИО полностью.',exists:'Этот Gmail уже зарегистрирован. Перейди во вкладку «Вход».',badLogin:'Неверный Gmail или пароль.',wrongOld:'Текущий пароль неверный.',admSub:'Этот раздел видит только владелец сайта. Здесь добавляются видео, задания, книги и заметки.',addVideo:'Добавить видео и задание',addBook:'Добавить книгу',addNote:'Добавить мотивационную заметку',add:'Добавить',users:'Пользователи',usersNote:'Все зарегистрированные ученики.',noDb:'Не удалось сохранить: проверь права админа и подключение к Supabase.',badUrl:'Введи корректную ссылку (https://...).',emptyT:'Введи название.',del:'Удалить',cnt:'Всего',byG:'класс',ph_title:'Название',ph_task:'Текст задания (необязательно)',ph_taskurl:'Ссылка на задание (необязательно)',ph_note:'Мотивационный текст',search:'Поиск',goalTitle:'Цель',aToB:'От точки А к точке Б',goalPct:'Целевой балл, %',deadline:'Срок',needA:'Сначала пройди входной тест.',daysLeft:'Осталось дней',dailyT:'Ежедневные 10 задач',dailyTxt:'10 задач в день по главе, на которой сейчас нужно сосредоточиться.',dailyGo:'Начать сегодняшние 10 задач',streak:'Дней подряд',planT:'План',planNote:'Каждая глава: видео, задание, тест. Глава считается закрытой, когда тест выше 80%.',days:'дн.',status:'Статус',done:'закрыта',inProg:'в работе',todo:'не начата',myStrat:'Моя стратегия',stratSub:'ИИ напишет личный совет по твоему результату, цели и сроку.',genStrat:'Написать стратегию',myNotes:'Мои заметки',focus:'Сейчас в фокусе',of:'/',min:'мин',minsDay:'Время в день',todayPlan:'План на сегодня',noToday:'На сегодня плана нет. Нажми «Обновить план».',calT:'План по дням',mapT:'Карта глав',replan:'Обновить план',tasks:'задач',tomorrow:'Завтра',openPlan:'Открыть план',it_theory:'Теория',it_practice:'Тренировка',it_practice2:'Закрепление',it_fix:'Работа над ошибками',it_test:'Тест по главе',it_review:'Повторение',it_reflect:'Итоги недели',it_retest:'Входной тест',s_theory:'Видео: ',s_theory0:'Посмотри видео и выполни задание. Если видео нет, прочитай теорию в разделе «Книги».',s_fix:'Разбери прошлые ошибки с ИИ, затем реши эту тему заново',s_test:'только эта тема, выше 80% закрывает главу',s_review:'интервальное повторение, чтобы не забыть',s_reflect:'Подведи итоги недели: какая ошибка самая частая, что изменишь на следующей неделе? Запиши в «Мои заметки».',s_retest:'Пройди входной тест ещё раз и измерь прогресс А→Б.',s_focus:'упор на самые частые ошибки',tip_ar:'проверяй вычисления дважды',tip_sign:'выписывай знак на каждом шаге',tip_form:'сначала формула, потом числа',tip_trans:'преобразования записывай по шагам',why_A:'пробел во входном тесте',why_S:'последний результат',why_B:'проверка основы',hist:'Последние дни',trimmed:'Срок короткий: {n} глав не поместились в план. Увеличь срок или время в день.',noDeadline:'Срок не задан: план составлен на {n} дней. Если задашь срок, план подстроится под него.',planFrom:'в плане',testOn:'тест',write:'Записать',yours:'твой ответ',correct:'верно',noAns:'Нет ответа',wrongAns:'Твой ответ неверный:',mistakes:'Ошибки',practice:'Тренировка',closedMsg:'Глава освоена (выше 80%). Разбери отдельные ошибки.',toPlan:'Вернуться к плану'}};
+let L=st.g('mp_lang')||'kk';const t=k=>T[L][k]||k;
+
+const C={bol:['Бөлшек','Дроби',[]],san:['Сандар тізбегі','Числовые последовательности',['bol']],komb:['Комбинаторика және статистика','Комбинаторика и статистика',['bol','san']],ten:['Теңдеулер, теңдіктер, теңсіздіктер','Уравнения, равенства, неравенства',['bol']],koo:['Координаталық жазықтық','Координатная плоскость',['san','ten']],fun:['Функция','Функция',['ten','koo']],fig:['Фигуралар','Фигуры',['bol']],per:['Периметр, аудан және көлем','Периметр, площадь и объём',['bol','fig']],bur:['Бұрыштар','Углы',['fig']],tri:['Тригонометрия','Тригонометрия',['bur','fig','bol']]};
+const cn=k=>C[k][L==='kk'?0:1],pre=k=>C[k][2];
+const CH=()=>Object.keys(C).filter(k=>BANK.has(k,U?+U.g:9));  /* тек оқушының сыныбында есептері бар тараулар */
+
+/* Тақырыптар бөлінісі: жоба жұмысының 2.1 бөлімі (1-9 сынып бағдарламасына шолу) бойынша */
+const TOP={
+bol:{5:['ЕҮОБ, ЕКОЕ; жай бөлшектер; ондық бөлшектер; проценттер','НОД, НОК; обыкновенные дроби; десятичные дроби; проценты'],6:['қатынас, пропорция; тура және кері пропорционал; масштаб','отношение, пропорция; прямая и обратная пропорциональность; масштаб'],7:['рационал өрнектер, бөлшектерді қысқарту, теңбе-тең түрлендіру','рациональные выражения, сокращение дробей, тождественные преобразования']},
+san:{5:['натурал сандар және 0; сандар тізбегі','натуральные числа и 0; числовые последовательности'],6:['арифметикалық орта, медиана, мода','среднее арифметическое, медиана, мода'],8:['квадрат түбір; иррационал сандар','квадратный корень; иррациональные числа'],9:['арифметикалық және геометриялық прогрессия, индукция','арифметическая и геометрическая прогрессии, индукция']},
+komb:{5:['жиындар, ішкі жиын, қиылысу, бірігу; диаграмма, кесте','множества, подмножества, пересечение, объединение; диаграммы, таблицы'],6:['орта, медиана, мода; комбинаторика','среднее, медиана, мода; комбинаторика'],7:['жиіліктер, таңдама','частоты, выборка'],9:['қосу және көбейту ережесі, орналастыру, Ньютон биномы, ықтималдық','правила сложения и умножения, размещения, бином Ньютона, вероятность']},
+ten:{5:['өрнектер мен теңдеулер, ықшамдау, қос теңсіздік','выражения и уравнения, упрощение, двойные неравенства'],6:['теріс сандар, модуль, жақша ашу, ұқсас қосылғыштар, сызықтық теңдеу, теңсіздіктер','отрицательные числа, модуль, раскрытие скобок, подобные слагаемые, линейные уравнения, неравенства'],7:['дәреже, көпмүше, қысқаша көбейту формулалары, көбейткіштерге жіктеу','степень, многочлены, формулы сокращённого умножения, разложение на множители'],8:['квадрат теңдеу, Виет теоремасы, рационал теңдеулер','квадратные уравнения, теорема Виета, рациональные уравнения'],9:['екі айнымалысы бар теңдеулер, теңдеулер жүйесі, теңсіздіктер','уравнения с двумя переменными, системы, неравенства']},
+fun:{7:['функция, сызықтық функция y=kx+b, y=ax², y=k/x','функция, линейная функция y=kx+b, y=ax², y=k/x'],8:['y=√x, квадраттық функция','y=√x, квадратичная функция'],9:['тригонометриялық функциялар, келтіру формулалары','тригонометрические функции, формулы приведения']},
+koo:{5:['ондық бөлшектерді координаталық сәуледе кескіндеу','десятичные дроби на координатном луче'],6:['координаталық түзу және жазықтық, симметрия, вектор ұғымы','координатная прямая и плоскость, симметрия, понятие вектора'],7:['жарты жазықтық','полуплоскость'],8:['екі нүктенің арақашықтығы, кесінді ортасы, түзу мен шеңбер теңдеуі','расстояние между точками, середина отрезка, уравнения прямой и окружности'],9:['векторлар, қозғалыс, ұқсастық түрлендіру','векторы, движение, преобразование подобия']},
+fig:{5:['көпбұрыштар, шеңбер, дөңгелек, сектор','многоугольники, окружность, круг, сектор'],6:['кеңістіктегі фигуралар','пространственные фигуры'],7:['үшбұрыш, теңдік белгілері, параллель түзулер','треугольник, признаки равенства, параллельные прямые'],8:['төртбұрыштар, Фалес және Пифагор теоремалары','четырёхугольники, теоремы Фалеса и Пифагора'],9:['ұқсастық белгілері, іштей/сырттай сызылған төртбұрыш','признаки подобия, вписанные и описанные четырёхугольники']},
+per:{5:['формулалар (периметр, аудан)','формулы (периметр, площадь)'],8:['тіктөртбұрыш, параллелограм, үшбұрыш, трапеция ауданы','площади прямоугольника, параллелограмма, треугольника, трапеции'],9:['шеңбер ұзындығы, дөңгелек және оның бөліктерінің ауданы','длина окружности, площадь круга и его частей']},
+bur:{5:['градустық өлшем, транспортир, бұрыш түрлері','градусная мера, транспортир, виды углов'],7:['сыбайлас және вертикаль бұрыштар, қиюшымен жасалатын бұрыштар','смежные и вертикальные углы, углы при секущей'],8:['іштей сызылған бұрыш','вписанный угол'],9:['векторлар арасындағы бұрыш, скаляр көбейтінді','угол между векторами, скалярное произведение']},
+tri:{8:['сүйір бұрыштың sin, cos, tg, ctg','sin, cos, tg, ctg острого угла'],9:['радиан, тригонометриялық функциялар, келтіру формулалары','радианы, тригонометрические функции, формулы приведения']}
+};
+const topTxt=k=>{const g=+U.g,o=(TOP[k]||{});const gs=Object.keys(o).map(Number).filter(x=>x<=g&&x>=Math.max(5,g-2)).sort();return gs.map(x=>x+': '+o[x][L==='kk'?0:1]).join(' · ')};
+
+const SEC={alg:['bol','san','komb','ten','fun','koo'],geo:['fig','per','bur','koo','tri']};
+const SN={alg:['Алгебра','Алгебра'],geo:['Геометрия','Геометрия']},sn=k=>SN[k][L==='kk'?0:1];
+const ET={kk:{ar:'арифметикалық қате',sign:'таңбадағы қате',form:'формуланы қолданудағы қате',trans:'түрлендірудегі қате'},ru:{ar:'арифметическая ошибка',sign:'ошибка в знаке',form:'ошибка в применении формулы',trans:'ошибка в преобразовании'}};
+const FACTS={kk:['Нөл санын есептеу ережелерімен алғаш жүйелі сипаттаған үнді математиктері, оның ішінде Брахмагупта (VII ғасыр).','«Алгоритм» сөзі әл-Хорезмидің есімінен, ал «алгебра» оның еңбегіндегі «әл-жәбр» сөзінен шыққан.','0,999... периодты бөлшегі дәл 1-ге тең: 1/3 = 0,333... болса, 3 · 1/3 = 0,999... = 1.','52 ойын картасын араластырудың 52! ≈ 8 · 10^67 тәсілі бар.','π саны иррационал: оның ондық жазбасы шексіз әрі периодты қайталанбайды.','Фибоначчи тізбегі (1, 1, 2, 3, 5, 8, ...) күнбағыс себетіндегі спиральдардан көрінеді.','Евклидтің «Негіздер» еңбегі шамамен б.з.д. 300 жылы жазылған.','Жазықтықта кез келген үшбұрыштың ішкі бұрыштарының қосындысы әрқашан 180°.'],
+ru:['Правила действий с нулём впервые системно описали индийские математики, среди них Брахмагупта (VII век).','Слово «алгоритм» происходит от имени аль-Хорезми, а «алгебра» от слова «аль-джабр» из его труда.','Периодическая дробь 0,999... равна ровно 1: если 1/3 = 0,333..., то 3 · 1/3 = 0,999... = 1.','Колоду из 52 карт можно перемешать 52! ≈ 8 · 10^67 способами.','Число π иррационально: его десятичная запись бесконечна и не имеет периода.','Последовательность Фибоначчи (1, 1, 2, 3, 5, 8, ...) видна в спиралях подсолнуха.','«Начала» Евклида написаны примерно в 300 году до н. э.','Сумма внутренних углов любого треугольника на плоскости всегда равна 180°.']};
+const NOTES={kk:['Күн сайынғы шағын қадам аптасына үлкен нәтиже береді. Үлкен нәтиже кішкентай қадамнан басталады.','Қате ештеңені бұзбайды: ол қай тақырыпты қайталау керегін көрсетеді.','Математика жалғасқан тақырыптардан тұрады. Негізді бекітсең, қалғаны жеңілдейді.','Түсінбеген тақырыпқа оралу әлсіздік емес, дұрыс стратегия.','Өзіңді басқамен емес, кешегі өзіңмен салыстыр.','Мақсат нақты болса, жол да нақты болады.','Тоқтап қалсаң, жоспардағы келесі кішкентай қадамнан баста.','Бүгінгі жұмыс ертеңгі сенімділікті құрайды.'],
+ru:['Маленький шаг каждый день за неделю даёт большой результат. Большой результат начинается с маленького шага.','Ошибка ничего не ломает: она показывает, какую тему стоит повторить.','Математика состоит из связанных тем. Закрепишь основу, и остальное станет легче.','Вернуться к непонятной теме не слабость, а правильная стратегия.','Сравнивай себя не с другими, а с собой вчерашним.','Когда цель конкретна, путь тоже становится конкретным.','Если застрял, начни со следующего маленького шага плана.','Сегодняшняя работа создаёт завтрашнюю уверенность.']};
+
+const DEFB=[{id:'d1',t:'Okulyk.kz',u:'https://okulyk.kz',g:0,l:'all',s:'-'},{id:'d2',t:'BilimLand',u:'https://bilimland.kz',g:0,l:'all',s:'-'}];
+let CT={videos:[],books:[],notes:[]},U=null,S={},sess=null,isAdm=false,quiz=null,ctx='',msgs=[],weak=[],fi=Math.floor(Math.random()*8),ni=Math.floor(Date.now()/864e5),cur='home',openCh=null,mode='reg';
+const sb=(window.CFG&&!/YOUR/.test(CFG.SUPABASE_URL||''))?supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_KEY):null;
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const STREAK_MIN=5,TESTN=8;
+const books=()=>[...DEFB,...CT.books],today=()=>iso(new Date());
+const res=()=>S.res||[],prog=()=>S.prog||{},log=()=>S.log||{};
+const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let sT=null;const saveS=()=>{clearTimeout(sT);sT=setTimeout(()=>{sb.from('state').upsert({user_id:U.id,data:S,updated_at:new Date().toISOString()}).then(()=>{})},600)};
+function stats(){const lg=log();return{tests:res().filter(x=>x.mode!=='daily').length,cur:curLevel(),last:today(),days:Object.values(lg).filter(v=>v>=STREAK_MIN).length,today:lg[today()]||0}}
+async function saveU(){if(!U)return;await sb.from('profiles').update({grade:U.g,a_p:U.A?U.A.p:null,a_d:U.A?U.A.d:null,a_weak:U.A?U.A.weak:[],b_p:U.B?U.B.p:null,b_d:U.B&&U.B.d?U.B.d:null,skip_a:!!U.skipA,stats:stats()}).eq('id',U.id)}
+const anc=(id,s=new Set())=>{pre(id).forEach(p=>{if(!s.has(p)){s.add(p);anc(p,s)}});return s};
+const dep=id=>pre(id).length?1+Math.max(...pre(id).map(dep)):0;
+const gl=g=>g+' '+(L==='kk'?'сынып':'класс');
+
+/* Тіл */
+function fillSel(sel,keys,f){const s=$(sel),v=s.value;s.replaceChildren();keys.forEach(k=>{const o=E('option',0,f(k));o.value=k;s.append(o)});if(keys.map(String).includes(v))s.value=v}
+function gOpts(sel,v){fillSel(sel,[5,6,7,8,9],gl);if(v)$(sel).value=v}
+function fillCh(){fillSel('#tC',SEC[$('#tS').value||'alg'].filter(k=>CH().includes(k)),cn)}
+function applyLang(){
+  document.documentElement.lang=L;
+  document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));
+  document.querySelectorAll('[data-p]').forEach(e=>e.placeholder=t(e.dataset.p));
+  $('#tReg').textContent=t('reg');$('#tLog').textContent=t('log');setMode(mode);$('#cI').placeholder=t('cPh');
+  document.querySelectorAll('.lang button').forEach(b=>b.classList.toggle('on',b.dataset.l===L));
+  const ls=[['kk','Қазақша'],['ru','Русский']];
+  [['bL',1],['avL',0],['abL',0],['anL',0]].forEach(([id,all])=>{const s=$('#'+id),v=s.value||(all?L:'kk');s.replaceChildren();if(all){const o=E('option',0,t('allL'));o.value='all';s.append(o)}ls.forEach(([k,n])=>{const o=E('option',0,n);o.value=k;s.append(o)});s.value=v});
+  fillSel('#tS',Object.keys(SEC),sn);fillCh();fillSel('#avC',Object.keys(C),cn);fillSel('#abS',['alg','geo'],sn);
+  gOpts('#rG');if(U){gOpts('#vG',$('#vG').value||U.g);gOpts('#bG',$('#bG').value||U.g)}
+  buildNav();if(U)render();
+}
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>setLang(b.dataset.l));
+function setLang(l){L=l;st.s('mp_lang',l);applyLang()}
+
+/* Аутентификация (Supabase) */
+const errMap=m=>/already/i.test(m)?t('exists'):/invalid login/i.test(m)?t('badLogin'):/rate|too many/i.test(m)?t('rate'):/password/i.test(m)?t('shortP'):m;
+function setMode(m){mode=m;$('#fReg').classList.toggle('hide',m!=='reg');$('#aGo').textContent=t(m==='reg'?'reg':'log');$('#tReg').classList.toggle('on',m==='reg');$('#tLog').classList.toggle('on',m==='log');$('#aErr').textContent=''}
+$('#tReg').onclick=()=>setMode('reg');$('#tLog').onclick=()=>setMode('log');
+$('#sp').onchange=e=>$('#rP').type=e.target.checked?'text':'password';
+$('#aGo').onclick=async()=>{
+  const e=$('#rE').value.trim().toLowerCase(),p=$('#rP').value,n=$('#rN').value.trim(),er=$('#aErr'),b=$('#aGo');
+  if(!sb){er.textContent=t('cfgErr');return}
+  if(!/^[a-z0-9._%+-]+@gmail\.com$/.test(e)){er.textContent=t('badMail');return}
+  if(p.length<6){er.textContent=t('shortP');return}
+  if(mode==='reg'&&n.length<3){er.textContent=t('shortN');return}
+  b.disabled=true;er.textContent='';
+  try{
+    let r;
+    if(mode==='reg'){r=await sb.auth.signUp({email:e,password:p,options:{data:{name:n,grade:+$('#rG').value}}});
+      if(!r.error&&!r.data.session){er.textContent=t('confirmMail');b.disabled=false;return}}
+    else r=await sb.auth.signInWithPassword({email:e,password:p});
+    if(r.error){er.textContent=errMap(r.error.message);b.disabled=false;return}
+    await enter(r.data.session);
+  }catch(x){er.textContent=t('fail')+' ['+((x&&x.message)||x)+']'}
+  b.disabled=false;
+};
+async function logout(){try{await sb.auth.signOut()}catch(e){}location.reload()}$('#out').onclick=logout;
+async function enter(session){
+  sess=session;const u=session.user;
+  const pr=await sb.from('profiles').select('*').eq('id',u.id).maybeSingle();if(pr.error)throw new Error('profiles select: '+pr.error.message);let p=pr.data;
+  if(!p){const md=u.user_metadata||{},row={id:u.id,email:u.email,name:md.name||u.email.split('@')[0],grade:[5,6,7,8,9].includes(+md.grade)?+md.grade:7,pid:'MP-'+Math.floor(100000+Math.random()*900000)};
+    const ir=await sb.from('profiles').insert(row).select().single();if(ir.error)throw new Error('profiles insert: '+ir.error.message);p=ir.data}
+  if(!p)throw new Error('profile');
+  U={id:u.id,e:u.email,n:p.name,g:p.grade,pid:p.pid,d:(p.created_at||'').slice(0,10),A:p.a_p!=null?{p:p.a_p,d:p.a_d,weak:p.a_weak||[]}:null,B:p.b_p!=null?{p:p.b_p,d:p.b_d||''}:null,skipA:!!p.skip_a};
+  const [a,b,c]=await Promise.all([sb.from('state').select('data').eq('user_id',u.id).maybeSingle(),sb.from('admins').select('id').eq('id',u.id).maybeSingle(),sb.from('content').select('data').eq('key','main').maybeSingle()]);
+  S={res:[],prog:{},log:{},note:'',ai:'',pos:{},...(a.data?a.data.data:{})};isAdm=!!b.data;
+  if(c.data)CT={videos:[],books:[],notes:[],...c.data.data};
+  start();
+}
+function start(){
+  $('#splash').classList.add('hide');$('#auth').classList.add('hide');$('#app').classList.remove('hide');
+  gOpts('#vG',U.g);gOpts('#bG',U.g);
+  const r=res().filter(x=>x.mode!=='daily');weak=r.length?r[r.length-1].weak:[];ctx=S.ctx||'';$('#sNote').value=S.note||'';
+  buildNav();go(!U.A&&!U.skipA&&!isAdm?'place':'home');
+}
+
+/* Навигация */
+const NAV=['home','test','video','strat','books','chat','acc','admin'];
+function buildNav(){
+  const sb=$('#sb');sb.replaceChildren(E('span','logo','Math platform'));
+  NAV.forEach(k=>{if(k==='admin'&&!isAdm)return;const b=E('button','nv'+(k===cur?' on':''),t('n_'+k));b.onclick=()=>go(k);sb.append(b)});
+}
+function show(id){['home','place','qz',...NAV.slice(1)].forEach(k=>$('#'+k).classList.toggle('hide',k!==id))}
+function go(id){cur=id;show(id);closeMenu();buildNav();render();window.scrollTo(0,0)}
+function closeMenu(){$('#sb').classList.remove('o');$('#ov').classList.add('hide')}
+$('#menu').onclick=()=>{$('#sb').classList.add('o');$('#ov').classList.remove('hide')};$('#ov').onclick=closeMenu;
+function render(){({home:rHome,video:rVideo,strat:rStrat,books:rBooks,acc:rAcc,admin:rAdmin}[cur]||(()=>{}))()}
+
+/* Көмекші есептер */
+const pct=r=>Math.round(r.sc/r.n*100);
+function curLevel(){const r=res().filter(x=>x.mode!=='daily').slice(-3);return r.length?Math.round(r.reduce((a,x)=>a+pct(x),0)/r.length):U.A?U.A.p:null}
+const todayN=()=>log()[today()]||0;
+function streak(){const lg=log();let n=0,d=new Date();if((lg[iso(d)]||0)<STREAK_MIN)d.setDate(d.getDate()-1);while((lg[iso(d)]||0)>=STREAK_MIN){n++;d.setDate(d.getDate()-1)}return n}
+function plan(){const s=new Set([...(U.A?U.A.weak:[]),...weak]);let a=[...s].filter(k=>CH().includes(k));if(!a.length)a=CH();return a.sort((x,y)=>dep(x)-dep(y))}
+const chState=k=>{const s=(prog()[k]||{}).s;return s==null?'todo':s>=80?'done':'inProg'};
+const focusCh=()=>plan().find(k=>chState(k)!=='done')||plan()[0];
+
+/* Басты бет */
+function rHome(){ensurePlan();homePlan();
+  $('#hi').textContent=(L==='kk'?'Сәлем, ':'Привет, ')+U.n.split(' ')[0];
+  const b=$('#banner');b.replaceChildren();
+  if(!U.admin&&!U.A){b.append(E('p',0,t('noA')));const x=E('button','p',t('takeIt'));x.onclick=()=>go('place');b.append(x)}else b.classList.add('hide');
+  b.classList.toggle('hide',!(!U.admin&&!U.A));
+  const sg=$('#stats');sg.replaceChildren();const cl=curLevel();
+  [[res().length,'tests'],[U.A?U.A.p+'%':'-','levelA'],[cl!=null?cl+'%':'-','cur'],[U.B?U.B.p+'%':'-','goalB'],[todayN()+'/'+dayTarget(),'today']].forEach(([v,k])=>{const c=E('div','c stat');c.append(E('span','mu',t(k)),E('b',0,v));sg.append(c)});
+  const nl=[...NOTES[L],...CT.notes.filter(n=>n.l===L).map(n=>n.t)];$('#mot').textContent=nl[ni%nl.length];
+  $('#fact').textContent=FACTS[L][fi%8];
+  const lb=$('#last');lb.replaceChildren(E('div','h',t('lastRes')));const r=res().filter(x=>x.mode!=='daily');
+  if(!r.length){lb.append(E('p','mu',t('noRes')));return}
+  const l=r[r.length-1];lb.append(E('p',0,l.date+' · '+(l.mode==='place'?t('placeT'):cn(l.ch))+' · '+l.sc+'/'+l.n));
+  if(l.weak.length)lb.append(E('p','mu',t('repeat')+l.weak.map(cn).join(', ')));
+}
+$('#nf').onclick=()=>{fi++;$('#fact').textContent=FACTS[L][fi%8]};
+$('#nm').onclick=()=>{ni++;rHome()};
+
+/* Тест қозғалтқышы (дайын параметрлі банк) */
+$('#tS').onchange=fillCh;
+$('#plGo').onclick=()=>startQuiz('place');
+$('#plSkip').onclick=()=>{U.skipA=true;saveU();go('home')};
+$('#tGo').onclick=()=>startQuiz('chapter',$('#tC').value);$('#tPl').onclick=()=>startQuiz('place');
+function startQuiz(m,ch,n,item){
+  cur='qz';show('qz');closeMenu();buildNav();window.scrollTo(0,0);
+  const g=U.g;let qs=[];
+  if(m==='place'){const used=new Set();CH().forEach(c=>{for(let i=0;i<15;i++){const q=BANK.q(c,g);if(!used.has(q.q.kk)){used.add(q.q.kk);qs.push(q);return}}})}
+  else qs=BANK.qs(ch,g,n||TESTN);  /* тек таңдалған тарау: басқа тақырып араласпайды */
+  quiz={qs:sh(qs),ans:[],m,ch,item:item||null};
+  $('#qTitle').textContent=m==='place'?t('placeT'):m==='daily'?cn(ch)+' · '+t('practice'):cn(ch);renderQuiz();
+}
+function renderQuiz(){
+  const box=$('#qBox');box.replaceChildren();
+  quiz.qs.forEach((x,i)=>{const c=E('div','c');c.append(E('p','q',(i+1)+'. '+x.q[L]));
+    x.o.forEach((o,j)=>{const b=E('button','opt',o.v);b.onclick=()=>{quiz.ans[i]=j;[...c.querySelectorAll('.opt')].forEach((y,k)=>y.classList.toggle('sel',k===j))};c.append(b)});box.append(c)});
+  const f=E('button','p',t('show_res'));f.style.width='100%';f.onclick=finish;box.append(f);
+}
+function finish(){
+  const ans=quiz.ans.filter(a=>a!=null).length;
+  if(ans<quiz.qs.length&&!confirm(t('unans')))return;
+  let sc=0;const w=new Set(),bad=[],errs={},ce={},wrongNo=[],box=$('#qBox');box.replaceChildren();
+  quiz.qs.forEach((x,i)=>{
+    const c0=quiz.ans[i],ok=c0===x.a,skip=c0==null,er=(!ok&&!skip)?x.o[c0].e:null;
+    if(ok)sc++;
+    else{
+      w.add(x.t);wrongNo.push(i+1);
+      if(er){errs[er]=(errs[er]||0)+1;const q=(ce[x.t]=ce[x.t]||{});q[er]=(q[er]||0)+1}
+      bad.push(`«${x.q[L]}»: ${skip?'-':x.o[c0].v} / ${x.o[x.a].v} (${cn(x.t)}${er?', '+ET[L][er]:''})`);
+    }
+    const c=E('div','c '+(ok?'rok':'rbad'));c.id='rq'+i;
+    c.append(E('p','q',(i+1)+'. '+x.q[L]));
+    x.o.forEach((o,j)=>{
+      const right=j===x.a,mine=j===c0,rw=E('div','ro'+(right?' ok':mine?' no':''));
+      rw.append(E('span','rm',right?'✓':mine?'✗':''),E('span',0,o.v));
+      if(!ok&&mine)rw.append(E('span','rl',t('yours')));
+      if(!ok&&right)rw.append(E('span','rl',t('correct')));
+      c.append(rw);
+    });
+    if(!ok){const bn=E('p','bn',(skip?t('noAns'):t('wrongAns')+' '+x.o[c0].v)+' · '+t('right')+x.o[x.a].v+(er?' · '+ET[L][er]:''));bn.append(E('span','tag',cn(x.t)));c.append(bn)}
+    box.append(c);
+  });
+  const n=quiz.qs.length,p=Math.round(sc/n*100);
+  let path;
+  if(quiz.m==='place'){const set=new Set(w);[...w].forEach(k=>anc(k).forEach(a=>set.add(a)));path=[...set].sort((a,b)=>dep(a)-dep(b))}
+  else path=(quiz.m==='chapter'&&p>=80)?[]:[...w];
+  const r=E('div','c '+(wrongNo.length?'rbad':'rok'));
+  r.append(E('h3',0,t('result')+': '+sc+' / '+n+' ('+p+'%)'));
+  if(wrongNo.length){
+    const wl=E('p','bn',t('mistakes')+': ');
+    wrongNo.forEach(k=>{const b=E('button','chip','№'+k);b.onclick=()=>$('#rq'+(k-1)).scrollIntoView({behavior:'smooth',block:'center'});wl.append(b)});
+    r.append(wl);
+  }
+  if(!path.length)r.append(E('p',0,t(wrongNo.length?'closedMsg':'noGap')));
+  else{r.append(E('p',0,t(quiz.m==='place'?'path':'repeat')));const ol=E('ol');path.forEach(k=>{const li=E('li',0,cn(k));li.append(E('span','tag',t(w.has(k)?'wrongT':'baseT')));ol.append(li)});r.append(ol)}
+  const mkRow=()=>{
+    const row=E('div','row'),mb=(x,c,f)=>{const b=E('button',c,x);b.onclick=f;return b};
+    if(wrongNo.length)row.append(mb(t('toAI'),'p',()=>{go('chat');askAI('cTest')}));
+    if(quiz.item)row.append(mb(t('toPlan'),'',()=>go('strat')));
+    if(quiz.m==='place')row.append(mb(t('toStrat'),wrongNo.length?'':'p',()=>go('strat')));
+    else if(!quiz.item)row.append(mb(t('toVideo'),'',()=>go('video')));
+    return row;
+  };
+  r.append(mkRow());box.prepend(r);
+  const bt=E('div','c');bt.append(mkRow());box.append(bt);
+  if(bad.length){ctx=(L==='kk'?'Оқушы мына есептерде қателесті (жауабы / дұрысы):\n':'Ученик ошибся в задачах (ответ / верно):\n')+bad.join('\n');S.ctx=ctx}
+  if(quiz.m!=='daily')weak=path;
+  S.res=res().concat([{date:new Date().toLocaleDateString(L==='kk'?'kk-KZ':'ru-RU'),mode:quiz.m,ch:quiz.ch,sc,n,weak:path,wrong:[...w],errs,ce}]).slice(-80);
+  if(quiz.m==='place'){U.A={p,d:today(),weak:path};if(!U.B)U.B={p:Math.min(100,p+15),d:''}}
+  if(quiz.m==='chapter'){S.prog=prog();S.prog[quiz.ch]={...(S.prog[quiz.ch]||{}),s:p}}
+  S.log=log();S.log[today()]=(S.log[today()]||0)+ans;
+  if(quiz.item)markItem(quiz.item.date,quiz.item.id,true);
+  if(quiz.m==='place'||quiz.m==='chapter')replan();
+  saveS();saveU();window.scrollTo(0,0);
+}
+
+/* Видеосабақ, тапсырма, тарау тесті */
+function rVideo(){
+  const b=$('#vBox'),g=+$('#vG').value,pg=prog(),pl=plan();b.replaceChildren();$('#vNote').textContent=t('vNote');
+  const keys=CH().sort((a,c)=>(pl.includes(c)&&U.A?1:0)-(pl.includes(a)&&U.A?1:0)||dep(a)-dep(c));
+  keys.forEach(k=>{
+    const vs=CT.videos.filter(v=>v.l===L&&+v.g===g&&v.c===k),p=pg[k]||{w:[],d:[]};p.w=p.w||[];p.d=p.d||[];
+    const dt=E('details'),sm=E('summary'),h=E('span',0,cn(k));if(U.A&&pl.includes(k))h.append(E('span','tag',t('rec')));
+    sm.append(h,E('span','mu',p.s!=null?p.s+'%':''));dt.append(sm);if(openCh===k)dt.open=true;
+    const d=E('div'),mark=(i,key,id)=>{i.onchange=()=>{S.prog=prog();const q=S.prog[k]=S.prog[k]||{};q[key]=(q[key]||[]).filter(x=>x!==id);if(i.checked)q[key].push(id);saveS()}};
+    d.append(E('div','h',t('step1')+' / '+t('step2')));
+    if(!vs.length)d.append(E('p','mu',t('noVid')));
+    vs.forEach(v=>{
+      const r=E('div','it'),l=E('div');l.append(E('b',0,v.t));
+      const a=E('a',0,t('watch'));a.href=v.u;a.target='_blank';a.rel='noopener';a.style.marginLeft='10px';l.append(a);
+      const cb=E('label');cb.style.cssText='display:flex;gap:6px;align-items:center;margin:0;color:var(--tx)';const i=E('input');i.type='checkbox';i.checked=p.w.includes(v.id);mark(i,'w',v.id);cb.append(i,t('watched'));r.append(l,cb);d.append(r);
+      if(v.k||v.ku){const tr=E('div','it'),tx=E('div');tx.append(E('span','mu',t('taskL')+': '),E('span',0,v.k||''));
+        if(v.ku){const a2=E('a',0,t('open'));a2.href=v.ku;a2.target='_blank';a2.rel='noopener';a2.style.marginLeft='8px';tx.append(a2)}
+        const c2=E('label');c2.style.cssText='display:flex;gap:6px;align-items:center;margin:0;color:var(--tx)';const i2=E('input');i2.type='checkbox';i2.checked=p.d.includes(v.id);mark(i2,'d',v.id);c2.append(i2,t('taskDone'));tr.append(tx,c2);d.append(tr)}
+    });
+    d.append(E('div','h',t('step3')));const row=E('div','row');row.style.alignItems='center';const tb=E('button','p',t('chTest'));tb.onclick=()=>startQuiz('chapter',k);row.append(tb);
+    row.append(E('span','mu',p.s!=null?t('lastScore')+': '+p.s+'%':''));d.append(row);dt.append(d);b.append(dt);
+  });openCh=null;
+}
+$('#vG').onchange=rVideo;
+
+/* Стратегия */
+function rStrat(){
+  const ab=$('#sAB');ab.replaceChildren(E('div','h',t('goalTitle')+': '+t('aToB')));
+  if(!U.A){ab.append(E('p',0,t('needA')));const x=E('button','p',t('takeIt'));x.onclick=()=>go('place');ab.append(x)}
+  else{
+    const cl=curLevel(),B=U.B||{p:Math.min(100,U.A.p+15),d:''};
+    const bar=E('div','bar'),f=E('i');f.style.width=Math.min(100,cl)+'%';bar.append(f);
+    [[U.A.p,'A '+U.A.p+'%'],[B.p,'B '+B.p+'%']].forEach(([v,l])=>{const s=E('span',0,l);s.style.left=v+'%';bar.append(s)});ab.append(bar);
+    ab.append(E('p',0,t('levelA')+': '+U.A.p+'%  ·  '+t('cur')+': '+cl+'%  ·  '+t('goalB')+': '+B.p+'%'));
+    const er={};res().forEach(r=>Object.entries(r.errs||{}).forEach(([k,v])=>er[k]=(er[k]||0)+v));
+    const es=Object.entries(er).sort((a,b)=>b[1]-a[1]).map(([k,v])=>ET[L][k]+' ('+v+')').join(', ');if(es)ab.append(E('p','mu',t('errStat')+': '+es));
+    const row=E('div','row'),a=E('div'),d=E('div'),pi=E('input'),di=E('input');pi.type='number';pi.min=40;pi.max=100;pi.value=B.p;di.type='date';di.value=B.d||'';
+    a.append(E('label',0,t('goalPct')),pi);d.append(E('label',0,t('deadline')),di);const mb=E('div'),mi=E('select');[20,30,45,60].forEach(v=>{const o=E('option',0,v+' '+t('min'));o.value=v;mi.append(o)});mi.value=S.mins||30;mb.append(E('label',0,t('minsDay')),mi);row.append(a,d,mb);ab.append(row);
+    const sv=E('button','p',t('save'));sv.style.marginTop='10px';const info=E('span','mu');info.style.marginLeft='10px';
+    const upd=()=>{const dl=di.value?Math.ceil((new Date(di.value)-new Date(today()))/864e5):null;info.textContent=dl!=null?t('daysLeft')+': '+Math.max(dl,0):''};upd();
+    sv.onclick=async()=>{U.B={p:Math.max(40,Math.min(100,+pi.value||80)),d:di.value};S.mins=+mi.value;await saveU();replan();info.textContent=t('saved');setTimeout(rStrat,600)};ab.append(sv,info);
+  }
+  ensurePlan();rToday();rCal();rMap();
+  $('#sAI').textContent=S.ai||'';
+}
+
+/* Жоспар: күн сайынғы нақты тапсырмалар (PLAN.build қозғалтқышы, күйге қарай күн сайын қайта құрылады) */
+const fmtD=s=>s.slice(8,10)+'.'+s.slice(5,7);
+const WD={kk:['Жс','Дс','Сс','Ср','Бс','Жм','Сб'],ru:['Вс','Пн','Вт','Ср','Чт','Пт','Сб']};
+const dayLabel=(s,td)=>{const p=s.split('-').map(Number),w=WD[L][new Date(p[0],p[1]-1,p[2]).getDay()];
+  return (s===td?t('today')+' · ':s===PLAN.addD(td,1)?t('tomorrow')+' · ':'')+fmtD(s)+' ('+w+')'};
+function needList(){
+  const s=new Set([...(U.A?U.A.weak:[]),...weak]);
+  Object.entries(prog()).forEach(([k,v])=>{if(v&&v.s!=null&&v.s<80)s.add(k)});
+  return [...s].filter(k=>C[k]&&CH().includes(k)&&chState(k)!=='done').sort((a,b)=>dep(a)-dep(b));
+}
+function domErr(k){const c={};res().forEach(r=>{const e=r.ce&&r.ce[k];if(e)Object.entries(e).forEach(([a,v])=>c[a]=(c[a]||0)+v)});const m=Object.entries(c).sort((a,b)=>b[1]-a[1])[0];return m?m[0]:null}
+function chInfo(){
+  const pl=res().filter(x=>x.mode==='place').slice(-1)[0],pw=pl&&pl.wrong?pl.wrong:null;
+  return needList().map(k=>{
+    const s=(prog()[k]||{}).s,has=s!=null;let need,why;
+    if(has){need=s<50?4:s<65?3:2;why='S'}
+    else if(!pw||pw.includes(k)){need=3;why='A'}
+    else{need=1;why='B'}
+    return{k,need,why,sc:has?s:null,dom:domErr(k)};
+  });
+}
+function replan(){
+  if(!U||!U.A)return;
+  const old=S.plan||{},td=today(),done=old.done||{},hist=(old.hist||[]).slice();
+  (old.days||[]).forEach(d=>{if(d.date<td&&!hist.some(h=>h.date===d.date))hist.push({date:d.date,done:d.items.filter(i=>done[d.date+'|'+i.id]).length,total:d.items.length})});
+  const B=U.B,dl=B&&B.d?Math.ceil((new Date(B.d)-new Date(td))/864e5):null;
+  const info=chInfo(),nat=info.reduce((x,c)=>x+PLAN.len(c.need),0)+4;
+  const H=Math.min(60,dl!=null&&dl>=0?dl+1:Math.max(14,nat));
+  const od=(old.days||[]).find(d=>d.date===td),keep=!!(od&&od.items.some(i=>done[td+'|'+i.id]));
+  const n={20:5,30:8,45:10,60:12}[S.mins||30]||8;
+  const all=[...info.map(c=>c.k),...CH().filter(k=>!info.some(c=>c.k===k)).sort((a,b)=>dep(a)-dep(b))];
+  const b=PLAN.build({start:keep?PLAN.addD(td,1):td,H:H-(keep?1:0),ch:info,all,n,tn:TESTN});
+  S.plan={gen:td,days:(keep?[od]:[]).concat(b.days),done,hist:hist.slice(-60),trimmed:b.trimmed,H};
+  saveS();
+}
+function ensurePlan(){if(U&&U.A&&(!S.plan||S.plan.gen!==today()))replan()}
+const planDay=()=>(S.plan&&S.plan.days.find(d=>d.date===today()))||null;
+function dayTarget(){const d=planDay(),n=d?PLAN.tasksOf(d.items):0;return n||10}
+const isDone=(date,id)=>!!((S.plan||{}).done||{})[date+'|'+id];
+function markItem(date,id,v){S.plan=S.plan||{days:[],done:{}};const dn=S.plan.done=S.plan.done||{};if(v)dn[date+'|'+id]=1;else delete dn[date+'|'+id];saveS()}
+const itemTitle=it=>t(it.t==='practice'&&it.x?'it_practice2':'it_'+it.t)+(it.ch?': '+cn(it.ch):'');
+const whyTxt=it=>it.w==='A'?t('why_A'):it.w==='S'?t('why_S')+' '+it.sc+'%':it.w==='B'?t('why_B'):'';
+function itemSub(it){
+  const p=[];
+  if(it.t==='theory'){const vs=CT.videos.filter(v=>v.l===L&&+v.g===U.g&&v.c===it.ch);p.push(vs.length?t('s_theory')+vs.map(v=>v.t).join(', '):t('s_theory0'))}
+  else if(it.t==='practice'){p.push(it.n+' '+t('tasks'));if(it.x)p.push(t('s_focus'));if(it.e)p.push(t('tip_'+it.e))}
+  else if(it.t==='fix')p.push(t('s_fix')+' ('+it.n+' '+t('tasks')+')');
+  else if(it.t==='test')p.push(it.n+' '+t('tasks')+' · '+t('s_test'));
+  else if(it.t==='review')p.push(it.n+' '+t('tasks')+' · '+t('s_review'));
+  else if(it.t==='reflect')p.push(t('s_reflect'));
+  else if(it.t==='retest')p.push(t('s_retest'));
+  return p.join(' · ');
+}
+function itemActs(dt,it){
+  const a=[],ref={date:dt,id:it.id},btn=(x,f,p)=>{const b=E('button',p?'p':'',x);b.onclick=f;a.push(b)};
+  if(it.t==='theory')btn(t('open'),()=>{openCh=it.ch;go('video')});
+  else if(it.t==='practice'||it.t==='review')btn(t('start'),()=>startQuiz('daily',it.ch,it.n,ref),1);
+  else if(it.t==='fix'){btn(t('toAI'),()=>{go('chat');askAI('cTest')},1);btn(t('start'),()=>startQuiz('daily',it.ch,it.n,ref))}
+  else if(it.t==='test')btn(t('start'),()=>startQuiz('chapter',it.ch,it.n,ref),1);
+  else if(it.t==='retest')btn(t('start'),()=>startQuiz('place',null,null,ref),1);
+  else if(it.t==='reflect')btn(t('write'),()=>{$('#sNote').scrollIntoView({block:'center'});$('#sNote').focus()});
+  return a;
+}
+function itemRow(dt,it,live){
+  const r=E('div','pi'+(isDone(dt,it.id)?' dn':'')),l=E('div'),wt=(it.t==='theory'||(it.t==='practice'&&!it.x)||it.t==='test')?whyTxt(it):'';
+  l.append(E('b',0,itemTitle(it)));if(wt)l.append(E('span','tag',wt));
+  const sub=itemSub(it);if(sub)l.append(E('div','mu',sub));
+  const a=E('div','pa');if(live)itemActs(dt,it).forEach(b=>a.append(b));
+  const cb=E('input');cb.type='checkbox';cb.checked=isDone(dt,it.id);cb.disabled=dt>today();
+  cb.onchange=()=>{markItem(dt,it.id,cb.checked);rToday();rCal()};
+  a.append(cb);r.append(l,a);return r;
+}
+function rToday(){
+  const dy=$('#sDay');dy.replaceChildren(E('div','h',t('todayPlan')));
+  if(!U.A){dy.append(E('p','mu',t('needA')));return}
+  const d=planDay();
+  if(!d||!d.items.length){dy.append(E('p','mu',t('noToday')));const b=E('button','p',t('replan'));b.onclick=()=>{replan();rStrat()};dy.append(b);return}
+  const dn=d.items.filter(i=>isDone(d.date,i.id)).length,bar=E('div','bar'),f=E('i');bar.style.margin='12px 0';f.style.width=Math.round(dn/d.items.length*100)+'%';bar.append(f);
+  dy.append(E('p',0,t('today')+': '+todayN()+' / '+dayTarget()+' '+t('tasks')+'  ·  '+t('streak')+': '+streak()),bar);
+  d.items.forEach(it=>dy.append(itemRow(d.date,it,true)));
+  const rb=E('button','l',t('replan'));rb.onclick=()=>{replan();rStrat()};dy.append(rb);
+}
+const MON={kk:['Қаңтар','Ақпан','Наурыз','Сәуір','Мамыр','Маусым','Шілде','Тамыз','Қыркүйек','Қазан','Қараша','Желтоқсан'],ru:['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь']};
+const WDM={kk:['Дс','Сс','Ср','Бс','Жм','Сб','Жс'],ru:['Пн','Вт','Ср','Чт','Пт','Сб','Вс']};
+let calSel=null,calM=null;
+function dayGoal(d){
+  const seen=new Map();
+  d.items.forEach(i=>{if(i.ch){const o=seen.get(i.ch)||new Set();o.add(i.t);seen.set(i.ch,o)}});
+  const g=[];
+  seen.forEach((ty,k)=>{g.push(ty.has('test')?t('g_test').replace('{c}',cn(k)):ty.size===1&&ty.has('review')?t('g_rev').replace('{c}',cn(k)):t('g_work').replace('{c}',cn(k)))});
+  if(d.items.some(i=>i.t==='reflect'))g.push(t('g_ref'));
+  if(d.items.some(i=>i.t==='retest'))g.push(t('g_ret'));
+  return g.join('; ');
+}
+function rCal(){
+  const c=$('#sCal');c.replaceChildren(E('div','h',t('calT')));
+  const P=S.plan;if(!U.A||!P||!P.days.length){c.classList.add('hide');return}c.classList.remove('hide');
+  const td=today(),by={};P.days.forEach(d=>by[d.date]=d);
+  if(!calSel)calSel=td;if(!calM)calM=td.slice(0,7);
+  if(P.hist&&P.hist.length)c.append(E('p','mu',t('hist')+': '+P.hist.slice(-7).map(h=>h.done>=h.total?'✓':h.done?'◐':'✗').join(' ')));
+  if(P.trimmed)c.append(E('p','err',t('trimmed').replace('{n}',P.trimmed)));
+  if(!(U.B&&U.B.d))c.append(E('p','mu',t('noDeadline').replace('{n}',P.H)));
+  const [Y,M]=calM.split('-').map(Number),nav=E('div','calnav'),pv=E('button','l','‹'),nx=E('button','l','›');
+  const shift=n=>{const x=new Date(Y,M-1+n,1);calM=x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0');rCal()};
+  pv.onclick=()=>shift(-1);nx.onclick=()=>shift(1);nav.append(pv,E('b',0,MON[L][M-1]+' '+Y),nx);c.append(nav);
+  const grid=E('div','cal');WDM[L].forEach(w=>grid.append(E('div','cw',w)));
+  const first=new Date(Y,M-1,1),lead=(first.getDay()+6)%7,nd=new Date(Y,M,0).getDate();
+  for(let i=0;i<lead;i++)grid.append(E('div','cd emp'));
+  for(let n=1;n<=nd;n++){
+    const ds=Y+'-'+String(M).padStart(2,'0')+'-'+String(n).padStart(2,'0'),d=by[ds],cell=E('button','cd');
+    cell.append(E('span','cn',n));
+    if(d&&d.items.length){const dn=d.items.filter(i=>isDone(ds,i.id)).length;cell.classList.add('has');if(dn===d.items.length)cell.classList.add('all');else if(ds<td)cell.classList.add('miss');cell.append(E('span','cc',dn+'/'+d.items.length))}
+    if(ds===td)cell.classList.add('td');if(ds===calSel)cell.classList.add('sel');
+    cell.onclick=()=>{calSel=ds;rCal()};grid.append(cell);
+  }
+  c.append(grid);
+  const box=E('div','calday'),d=by[calSel];
+  box.append(E('div','h',dayLabel(calSel,td)));
+  if(!d||!d.items.length)box.append(E('p','mu',calSel<td?t('noPast'):t('noItems')));
+  else{
+    box.append(E('p',0,t('goalDay')+': '+dayGoal(d)));
+    d.items.forEach(it=>box.append(itemRow(d.date,it,d.date===td)));
+    if(calSel>td)box.append(E('p','mu',t('futureNote')));
+  }
+  c.append(box);
+}
+function rMap(){
+  const pl=$('#sPlan');pl.replaceChildren(E('div','h',t('mapT')),E('p','mu',t('planNote')));
+  const first={},tst={};
+  ((S.plan&&S.plan.days)||[]).forEach(d=>d.items.forEach(i=>{if(!i.ch)return;if(!first[i.ch]&&i.t!=='review')first[i.ch]=d.date;if(i.t==='test'&&!tst[i.ch])tst[i.ch]=d.date}));
+  plan().forEach((k,i)=>{
+    const s=chState(k),r=E('div','it'),l=E('div');l.append(E('b',0,(i+1)+'. '+cn(k)));
+    const tt=topTxt(k);if(tt)l.append(E('div','mu',t('topics')+' '+tt));
+    l.append(E('div','mu',[t(s),(prog()[k]||{}).s!=null?prog()[k].s+'%':'',first[k]?t('planFrom')+' '+fmtD(first[k]):'',tst[k]?t('testOn')+' '+fmtD(tst[k]):''].filter(Boolean).join(' · ')));
+    const o=E('button',0,t('open'));o.onclick=()=>{openCh=k;go('video')};r.append(l,o);pl.append(r);
+  });
+}
+function homePlan(){
+  const c=$('#hPlan');c.replaceChildren();
+  if(!U.A){c.classList.add('hide');return}c.classList.remove('hide');
+  c.append(E('div','h',t('todayPlan')));
+  const d=planDay();
+  if(!d||!d.items.length)c.append(E('p','mu',t('noToday')));
+  else d.items.forEach(it=>c.append(E('div',isDone(d.date,it.id)?'mu':'',(isDone(d.date,it.id)?'✓ ':'• ')+itemTitle(it))));
+  const b=E('button','p',t('openPlan'));b.style.marginTop='8px';b.onclick=()=>go('strat');c.append(b);
+}
+$('#sNote').oninput=e=>{S.note=e.target.value;saveS()};
+$('#sGen').onclick=async()=>{
+  const er=$('#sErr'),out=$('#sAI');er.textContent='';
+  if(!U.A){er.textContent=t('needA');return}
+  ensurePlan();
+  const B=U.B||{p:80,d:''},dl=B.d?Math.max(0,Math.ceil((new Date(B.d)-new Date(today()))/864e5)):null;
+  const chs=CH().map(k=>{const s=(prog()[k]||{}).s;return cn(k)+': '+(s!=null?s+'%':'not tested')+(chState(k)==='done'?' (closed)':'')}).join('; ');
+  const ers={};res().forEach(r=>Object.entries(r.errs||{}).forEach(([k,v])=>ers[k]=(ers[k]||0)+v));
+  const es=Object.entries(ers).sort((a,b)=>b[1]-a[1]).map(([k,v])=>ET[L][k]+' x'+v).join(', ');
+  const wk=((S.plan&&S.plan.days)||[]).slice(0,7).map((d,i)=>(i+1)+') '+d.items.map(x=>itemTitle(x)+(x.n?' x'+x.n:'')).join(' + ')).join('\n');
+  const p=`Grade ${U.g} student. Level A = ${U.A.p}%, current level = ${curLevel()}%, goal B = ${B.p}%${dl!=null?', days left = '+dl:', no deadline set'}. Time per day: ${S.mins||30} min.\nChapter scores (last chapter test): ${chs}\nMost frequent error types: ${es||'no data yet'}\nChapters to work on, in order: ${needList().map(cn).join(' -> ')||'none'}\nPlanned next days:\n${wk||'no plan yet'}`;
+  $('#sGen').disabled=true;out.textContent='...';
+  try{const r=await callAI('strategy',[{role:'user',content:p}],[]);out.textContent=r;S.ai=r;saveS()}
+  catch(e){out.textContent=S.ai||'';er.textContent=e&&e.code==='rate'?t('rate'):t('fail')}
+  $('#sGen').disabled=false;
+};
+
+/* Кітаптар */
+function rBooks(){
+  const b=$('#bBox'),g=+$('#bG').value,l=$('#bL').value;b.replaceChildren();
+  const bs=books().filter(x=>(+x.g===0||+x.g===g)&&(l==='all'||x.l==='all'||x.l===l));
+  if(!bs.length){b.append(E('div','c',t('noBook')));return}
+  bs.forEach(x=>{const c=E('div','c'),r=E('div','it');r.style.padding=0;const d=E('div');d.append(E('b',0,x.t));
+    d.append(E('div','mu',[x.g?gl(x.g):'',x.s&&x.s!=='-'?sn(x.s):'',x.l==='all'?'KZ / RU':x.l.toUpperCase()].filter(Boolean).join(' · ')));
+    let a;if(x.a){a=E('button','p',t('read'));a.onclick=()=>openPdf(x)}else{a=E('a',0,t('open'));a.href=x.u;a.target='_blank';a.rel='noopener'}r.append(d,a);c.append(r);b.append(c)});
+}
+$('#bG').onchange=rBooks;$('#bL').onchange=rBooks;
+
+/* PDF оқу және ЖИ чат */
+const ld=u=>new Promise((ok,no)=>{const e=document.createElement('script');e.src=u;e.onload=ok;e.onerror=no;document.head.append(e)});
+const PDFV='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf';let pj=null;
+function loadPdfJs(){return pj||(pj=(async()=>{if(!window.pdfjsLib){await ld(PDFV+'.min.js');await ld(PDFV+'.worker.min.js')}pdfjsLib.GlobalWorkerOptions.workerSrc=PDFV+'.worker.min.js';return pdfjsLib})().catch(e=>{pj=null;throw e}))}
+let pdf=null,pgN=1,pdfKey='';
+async function openPdf(x){
+  const b=$('#rdB');$('#rd').classList.remove('hide');$('#rdT').textContent=x.t;$('#rdC').textContent=t('close');b.replaceChildren(E('p','mu',t('loading')));pdfKey=x.a;
+  try{const r=await sb.storage.from('books').download(x.a);if(r.error)throw r.error;await loadPdfJs();
+    pdf=await pdfjsLib.getDocument({data:await r.data.arrayBuffer()}).promise;pgN=Math.min((S.pos||{})[pdfKey]||1,pdf.numPages);await drawPg()}
+  catch(e){b.replaceChildren(E('p','err',t('pdfFail')))}
+}
+async function drawPg(){
+  const b=$('#rdB'),pg=await pdf.getPage(pgN),w=Math.min(b.clientWidth-20,900),sc=w/pg.getViewport({scale:1}).width,v=pg.getViewport({scale:sc*(window.devicePixelRatio||1)});
+  const cv=E('canvas');cv.width=v.width;cv.height=v.height;cv.style.width=w+'px';
+  await pg.render({canvasContext:cv.getContext('2d'),viewport:v}).promise;
+  b.replaceChildren(cv);b.scrollTop=0;$('#rdN').textContent=pgN+' / '+pdf.numPages;S.pos=S.pos||{};S.pos[pdfKey]=pgN;saveS();
+}
+$('#rdP').onclick=()=>{if(pdf&&pgN>1){pgN--;drawPg()}};$('#rdX2').onclick=()=>{if(pdf&&pgN<pdf.numPages){pgN++;drawPg()}};
+$('#rdC').onclick=()=>{$('#rd').classList.add('hide');$('#rdB').replaceChildren();pdf=null};
+
+async function callAI(kind,messages,images){
+  const ss=(await sb.auth.getSession()).data.session;if(!ss)throw{code:'auth'};
+  const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+ss.access_token},body:JSON.stringify({kind,lang:L,messages,images})});
+  if(r.status===429)throw{code:'rate'};if(!r.ok)throw{code:'fail'};return (await r.json()).text;
+}
+function toJpeg(blob){return new Promise((ok,no)=>{const u=URL.createObjectURL(blob),im=new Image();im.onload=()=>{const k=Math.min(1,1280/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',.82).split(',')[1])};im.onerror=no;im.src=u})}
+let att=[];
+function attList(){const l=$('#aList');l.replaceChildren();att.forEach((a,i)=>{const s=E('span',0,a.name+' ');s.style.marginRight='12px';const x=E('button','l','x');x.onclick=()=>{att.splice(i,1);attList()};s.append(x);l.append(s)})}
+async function pdfImgs(f,max){await loadPdfJs();const d=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise,out=[];
+  for(let i=1;i<=Math.min(max,d.numPages);i++){const pg=await d.getPage(i),v=pg.getViewport({scale:1.4}),cv=E('canvas');cv.width=v.width;cv.height=v.height;await pg.render({canvasContext:cv.getContext('2d'),viewport:v}).promise;out.push(await new Promise(r=>cv.toBlob(r,'image/jpeg',.85)))}return out}
+async function addFiles(fl){
+  $('#cE').textContent='';
+  for(const f of fl){try{
+    if(f.type.startsWith('image/'))att.push({name:f.name||'photo',img:f});
+    else if(f.type==='application/pdf'||/\.pdf$/i.test(f.name)){(await pdfImgs(f,3)).forEach((b,i)=>att.push({name:f.name+' #'+(i+1),img:b}))}
+    else att.push({name:f.name,txt:(await f.text()).slice(0,6000)});
+  }catch(e){$('#cE').textContent=t('attFail')}}
+  attList();
+}
+[['aCam','iCam'],['aGal','iGal'],['aFile','iFile']].forEach(([b,i])=>{$('#'+b).onclick=()=>$('#'+i).click();$('#'+i).onchange=e=>{addFiles([...e.target.files]);e.target.value=''}});
+function bubble(c,x){const m=E('div','m '+c,x);$('#log').append(m);$('#log').scrollTop=1e9;return m}
+let busy=false;
+async function askAI(text){
+  if(busy)return;const er=$('#cE');er.textContent='';let full=text,shown=text;
+  if(text==='cTest'){shown=t('cTest');full=ctx?ctx+(L==='kk'?'\n\nОсы қателерді талда.':'\n\nРазбери эти ошибки.'):null}
+  if(!full){er.textContent=t('needTest');return}
+  const ims=att.filter(a=>a.img).map(a=>a.img),tx=att.filter(a=>a.txt).map(a=>a.name+':\n'+a.txt).join('\n\n');
+  if(tx)full+='\n\n'+tx;if(ims.length)full+=L==='kk'?'\n\n(Қоса берілген суретте оқушының есебі немесе шешімі бар.)':'\n\n(На приложенном изображении задача или решение ученика.)';
+  if(att.length)shown+='  ['+att.map(a=>a.name).join(', ')+']';att=[];attList();
+  msgs.push({role:'user',content:full});bubble('u',shown);busy=true;$('#cS').disabled=true;const m=bubble('a','...');
+  try{
+    const imgs=[];for(const b of ims.slice(0,3))imgs.push({media_type:'image/jpeg',data:await toJpeg(b)});
+    const r=await callAI('tutor',msgs.slice(-9),imgs);
+    m.textContent=r;msgs.push({role:'assistant',content:r});
+  }catch(e){m.remove();msgs.pop();er.textContent=e&&e.code==='rate'?t('rate'):t('fail')}
+  busy=false;$('#cS').disabled=false;
+}
+$('#cS').onclick=()=>{const x=$('#cI').value.trim();if(x||att.length){$('#cI').value='';askAI(x||t('askErr'))}};$('#cT').onclick=()=>askAI('cTest');
+
+/* Аккаунт */
+function save(name,data){const a=E('a');a.href=URL.createObjectURL(new Blob([data]));a.download=name;a.click()}
+function rAcc(){
+  const b=$('#accInfo');b.replaceChildren();
+  [[t('name'),U.n],[t('email'),U.e],['ID',U.pid],[t('since'),U.d],[t('levelA'),U.A?U.A.p+'%':'-'],[t('goalB'),U.B?U.B.p+'%':'-']].forEach(([k,v])=>{const r=E('div','it');r.append(E('span','mu',k),E('b',0,v));b.append(r)});
+  const r=E('div','it');r.append(E('span','mu',t('cls')));const s=E('select');s.style.width='auto';[5,6,7,8,9].forEach(i=>{const o=E('option',0,i);o.value=i;s.append(o)});s.value=U.g;
+  s.onchange=()=>{U.g=+s.value;saveU();gOpts('#vG',U.g);gOpts('#bG',U.g)};r.append(s);b.append(r);
+  const l=$('#accLang');l.replaceChildren();[['kk','Қазақша'],['ru','Русский']].forEach(([k,n])=>{const x=E('button',k===L?'on':'',n);x.onclick=()=>setLang(k);l.append(x)});
+}
+$('#pGo').onclick=async()=>{
+  const er=$('#pE');er.textContent='';
+  if($('#pN').value.length<6){er.textContent=t('shortP');return}
+  const c=await sb.auth.signInWithPassword({email:U.e,password:$('#pO').value});if(c.error){er.textContent=t('wrongOld');return}
+  const u=await sb.auth.updateUser({password:$('#pN').value});if(u.error){er.textContent=errMap(u.error.message);return}
+  $('#pO').value=$('#pN').value='';er.textContent=t('saved');
+};
+$('#exp').onclick=()=>save('math-platform-data.json',JSON.stringify({profile:{name:U.n,grade:U.g,email:U.e,id:U.pid,registered:U.d,A:U.A,B:U.B},state:S},null,2));
+$('#del').onclick=async()=>{if(confirm(t('delQ'))){await sb.from('state').delete().eq('user_id',U.id);await sb.from('profiles').delete().eq('id',U.id);logout()}};
+
+/* Админ */
+const msg=x=>{$('#admMsg').textContent=x||''};
+async function saveCT(){try{const r=await sb.from('content').upsert({key:'main',data:CT});if(r.error)throw r.error;msg('');return true}catch(e){msg(t('noDb'));return false}}
+const okUrl=u=>/^https?:\/\/\S+\.\S+/.test(u);
+let ADM=[];
+function adminList(el,key,label){const b=$(el);b.replaceChildren();CT[key].forEach(x=>{const r=E('div','it'),d=E('div');d.append(E('b',0,x.t),E('div','mu',label(x)));const x_=E('button','d',t('del'));x_.onclick=async()=>{if(x.a){try{await sb.storage.from('books').remove([x.a])}catch(e){}}CT[key]=CT[key].filter(y=>y.id!==x.id);await saveCT();rAdmin()};r.append(d,x_);b.append(r)})}
+async function rAdmin(){
+  if(!isAdm)return;
+  fillSel('#avG',[5,6,7,8,9],gl);fillSel('#abG',[5,6,7,8,9],gl);
+  adminList('#avList','videos',x=>x.l.toUpperCase()+' · '+gl(x.g)+' · '+cn(x.c)+(x.k?' · '+t('taskL'):''));
+  adminList('#abList','books',x=>x.l.toUpperCase()+' · '+gl(x.g)+' · '+sn(x.s)+(x.a?' · PDF':''));
+  adminList('#anList','notes',x=>x.l.toUpperCase());
+  const r=await sb.from('profiles').select('*').order('created_at',{ascending:false});ADM=r.data||[];renderUsers();
+}
+function renderUsers(){
+  const q=$('#uQ').value.toLowerCase(),sg=$('#uStats');sg.replaceChildren();
+  const c0=E('div','c stat');c0.append(E('span','mu',t('cnt')),E('b',0,ADM.length));sg.append(c0);
+  [5,6,7,8,9].forEach(g=>{const c=E('div','c stat');c.append(E('span','mu',g+' '+t('byG')),E('b',0,ADM.filter(u=>+u.grade===g).length));sg.append(c)});
+  const tb=E('table'),hr=E('tr');['ID',t('name'),t('cls'),'Email',t('levelA'),t('cur'),t('goalB'),t('tests'),''].forEach(h=>hr.append(E('th',0,h)));tb.append(hr);
+  ADM.filter(u=>((u.email||'')+u.name+u.pid).toLowerCase().includes(q)).forEach(u=>{const s=u.stats||{},r=E('tr');
+    [u.pid,u.name,u.grade,u.email,u.a_p!=null?u.a_p+'%':'-',s.cur!=null?s.cur+'%':'-',u.b_p!=null?u.b_p+'%':'-',s.tests||0].forEach(v=>r.append(E('td',0,v)));
+    const td=E('td'),x=E('button','d','x');x.title=t('admDel');x.onclick=async()=>{if(confirm(u.name+'?')){await sb.from('state').delete().eq('user_id',u.id);await sb.from('profiles').delete().eq('id',u.id);rAdmin()}};td.append(x);r.append(td);tb.append(r)});
+  $('#uTab').replaceChildren(tb);
+}
+$('#uQ').oninput=renderUsers;
+async function addItem(key,x,clear){if(!x.t){msg(t('emptyT'));return}CT[key].push(x);if(await saveCT())clear();else CT[key].pop();rAdmin()}
+$('#avAdd').onclick=()=>{const u=$('#avU').value.trim(),ku=$('#avKU').value.trim();if(!okUrl(u)||(ku&&!okUrl(ku))){msg(t('badUrl'));return}
+  addItem('videos',{id:'v'+Date.now(),t:$('#avT').value.trim(),u,l:$('#avL').value,g:+$('#avG').value,c:$('#avC').value,k:$('#avK').value.trim(),ku},()=>{['#avT','#avU','#avK','#avKU'].forEach(s=>$(s).value='')})};
+$('#abAdd').onclick=async()=>{
+  const f=$('#abF').files[0],u=$('#abU').value.trim();let a='';
+  if(!f&&!okUrl(u)){msg(t('badUrl'));return}
+  if(!$('#abT').value.trim()){msg(t('emptyT'));return}
+  if(f){if(f.size>50*1048576){msg(t('big'));return}msg(t('uploading'));
+    a=Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.pdf';
+    const r=await sb.storage.from('books').upload(a,f,{contentType:'application/pdf'});if(r.error){msg(t('upFail'));return}}
+  addItem('books',{id:'b'+Date.now(),t:$('#abT').value.trim(),u:f?'':u,a,l:$('#abL').value,g:+$('#abG').value,s:$('#abS').value},()=>{$('#abT').value=$('#abU').value=$('#abF').value=''})};
+$('#anAdd').onclick=()=>addItem('notes',{id:'n'+Date.now(),t:$('#anT').value.trim(),l:$('#anL').value},()=>{$('#anT').value=''});
+$('#csv').onclick=()=>{const q=x=>'"'+String(x==null?'':x).replace(/"/g,'""')+'"';save('users.csv','\ufeffID,name,grade,email,A,B,tests,date\n'+ADM.map(u=>[u.pid,u.name,u.grade,u.email,u.a_p,u.b_p,(u.stats||{}).tests,(u.created_at||'').slice(0,10)].map(q).join(',')).join('\n'))};
+
+/* Іске қосу */
+applyLang();
+(async()=>{
+  const fin=()=>{$('#splash').classList.add('hide');$('#auth').classList.remove('hide')};
+  if(!sb){fin();$('#aErr').textContent=t('cfgErr');return}
+  try{const {data}=await sb.auth.getSession();if(data.session){await enter(data.session);return}}catch(e){}
+  fin();
+})();
+</script>
+</body>
+</html>
