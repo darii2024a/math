@@ -699,7 +699,7 @@ window.BANK={
   full(code,g,n){const o=this.own(code,g),p=this.pool(code,g),gens=sh(o.length?o.concat(p.filter(x=>!o.includes(x))):p),out=[],used=new Set();
     const hard=o.length?o:p;
     for(let i=0;out.length<n&&i<n*14;i++){const src=i<gens.length?gens[i]:hard[(i-gens.length)%hard.length],q=src.f();if(!used.has(q.q.kk)){used.add(q.q.kk);out.push(q)}}return out},
-  pool(code,g){const l=G[code].filter(x=>g>=7?(x.g<=g&&x.g>=7):x.g<=g);return l.length?l:G[code]},
+  pool(code,g){const T=this.nTop(code,g);if(T){const st=new Set();for(let i=0;i<T;i++)(R[code+g+':'+i]||[]).forEach(x=>st.add(x));if(st.size)return [...st]}const l=G[code].filter(x=>g>=7?(x.g<=g&&x.g>=7):x.g<=g);return l.length?l:G[code]},
   q(code,g){return pk(this.pool(code,g)).f()},
   qs(code,g,n){const pool=sh(this.pool(code,g)),out=[],used=new Set();
     for(let i=0;out.length<n&&i<n*12;i++){const q=pool[i%pool.length].f();if(!used.has(q.q.kk)){used.add(q.q.kk);out.push(q)}}
@@ -785,7 +785,7 @@ let L=st.g('mp_lang')||'kk';const t=k=>T[L][k]||k;
 
 const C={bol:['Бөлшек','Дроби',[]],san:['Сандар тізбегі','Числовые последовательности',['bol']],komb:['Комбинаторика және статистика','Комбинаторика и статистика',['bol','san']],ten:['Теңдеулер, теңдіктер, теңсіздіктер','Уравнения, равенства, неравенства',['bol']],koo:['Координаталық жазықтық','Координатная плоскость',['san','ten']],fun:['Функция','Функция',['ten','koo']],fig:['Фигуралар','Фигуры',['bol']],per:['Периметр, аудан және көлем','Периметр, площадь и объём',['bol','fig']],bur:['Бұрыштар','Углы',['fig']],tri:['Тригонометрия','Тригонометрия',['bur','fig','bol']]};
 const cn=k=>C[k][L==='kk'?0:1],pre=k=>C[k][2];
-const CH=()=>Object.keys(C).filter(k=>BANK.has(k,U?+U.g:9));  /* тек оқушының сыныбында есептері бар тараулар */
+const CH=()=>Object.keys(C).filter(k=>{const g=U?+U.g:9;return TOP[k]&&TOP[k][g]});  /* тек оқушының сыныбында есептері бар тараулар */
 
 /* Тақырыптар бөлінісі: жоба жұмысының 2.1 бөлімі (1-9 сынып бағдарламасына шолу) бойынша */
 const TOP={
