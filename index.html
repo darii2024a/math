@@ -900,8 +900,8 @@ $('#menu').onclick=()=>{$('#sb').classList.add('o');$('#ov').classList.remove('h
 function render(){({home:rHome,video:rVideo,strat:rStrat,books:rBooks,acc:rAcc,admin:rAdmin}[cur]||(()=>{}))()}
 
 /* Көмекші есептер */
-const pct=r=>Math.round(r.sc/r.n*100);
-function curLevel(){const r=res().filter(x=>x.mode!=='daily').slice(-3);return r.length?Math.round(r.reduce((a,x)=>a+pct(x),0)/r.length):U.A?U.A.p:null}
+const pct=r=>r&&r.n>0&&isFinite(r.sc)?Math.round(r.sc/r.n*100):NaN;
+function curLevel(){const r=res().filter(x=>x.mode!=='daily'&&isFinite(pct(x))).slice(-3);return r.length?Math.round(r.reduce((a,x)=>a+pct(x),0)/r.length):U.A?U.A.p:null}
 const todayN=()=>log()[today()]||0;
 function streak(){const lg=log();let n=0,d=new Date();if((lg[iso(d)]||0)<STREAK_MIN)d.setDate(d.getDate()-1);while((lg[iso(d)]||0)>=STREAK_MIN){n++;d.setDate(d.getDate()-1)}return n}
 function plan(){const s=new Set([...(U.A?U.A.weak:[]),...weak]);let a=[...s].filter(k=>CH().includes(k));if(!a.length)a=CH();return a.sort((x,y)=>dep(x)-dep(y))}
